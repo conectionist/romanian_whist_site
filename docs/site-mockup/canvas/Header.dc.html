@@ -13,45 +13,60 @@
 body{margin:0}
 </style>
 </helmet>
-<header lang="{{lang}}" style="position: relative; z-index: 5; width: 100%; box-sizing: border-box; min-height: 76px; padding: 10px 48px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 32px; border-bottom: 1px solid rgba(226,182,90,0.4); background: rgba(5,20,14,0.72); font-family: 'Alegreya Sans', sans-serif; color: #f3ead6">
-  <a href="Main.dc.html" style="display: flex; align-items: center; gap: 12px; color: #f3ead6; text-decoration: none">
+<header lang="{{lang}}" style="position: relative; z-index: 5; width: 100%; box-sizing: border-box; min-height: 76px; padding: 10px 48px; display: flex; align-items: center; justify-content: space-between; gap: 10px 24px; border-bottom: 1px solid rgba(226,182,90,0.4); background: rgba(5,20,14,0.72); font-family: 'Alegreya Sans', sans-serif; color: #f3ead6">
+  <a class="brand" href="Main.dc.html" style="display: flex; align-items: center; gap: 12px; color: #f3ead6; text-decoration: none">
     <svg aria-hidden="true" width="34" height="34" viewBox="0 0 24 24"><path fill="#e2b65a" d="M12 2.5C9.3 6.2 4 9.4 4 13.6c0 2.6 2 4.6 4.5 4.6 1.2 0 2.3-.5 3-1.3-.2 1.7-.9 3.1-2.2 4.1h5.4c-1.3-1-2-2.4-2.2-4.1.7.8 1.8 1.3 3 1.3 2.5 0 4.5-2 4.5-4.6 0-4.2-5.3-7.4-8-11.1z"/></svg>
-    <span style="font-family: 'Playfair Display', serif; font-weight: 600; font-size: 23px">Romanian Whist</span>
+    <span class="brand-name" style="font-family: 'Playfair Display', serif; font-weight: 600; font-size: 23px; white-space: nowrap">{{t.brand}}</span>
   </a>
-  <nav aria-label="{{t.navLabel}}" style="display: flex; flex-wrap: wrap; align-items: center; gap: 4px 30px; font-size: 17px">
-    <a class="nav-link" href="https://whist.akdscloud.eu" style="padding: 10px 0 8px; text-decoration: none; color: #f3ead6; border-bottom: 2px solid transparent">{{t.play}}</a>
-    <a class="nav-link" href="Downloads.dc.html" aria-current="{{nav.downloads.current}}" style="padding: 10px 0 8px; text-decoration: none; color: {{nav.downloads.color}}; border-bottom: 2px solid {{nav.downloads.line}}">{{t.downloads}}</a>
-    <a class="nav-link" href="Screenshots.dc.html" aria-current="{{nav.screenshots.current}}" style="padding: 10px 0 8px; text-decoration: none; color: {{nav.screenshots.color}}; border-bottom: 2px solid {{nav.screenshots.line}}">{{t.screenshots}}</a>
-    <a class="nav-link" href="About.dc.html" aria-current="{{nav.about.current}}" style="padding: 10px 0 8px; text-decoration: none; color: {{nav.about.color}}; border-bottom: 2px solid {{nav.about.line}}">{{t.about}}</a>
+  <nav class="nav" aria-label="{{t.navLabel}}" style="display: flex; align-items: center; gap: 4px 24px; font-size: 17px">
+    <div class="nav-links" style="display: flex; flex-wrap: wrap; align-items: center; gap: 4px 30px">
+      <a class="nav-link" href="https://whist.akdscloud.eu" style="padding: 10px 0 8px; text-decoration: none; color: #f3ead6; border-bottom: 2px solid transparent">{{t.play}}</a>
+      <a class="nav-link" href="Downloads.dc.html" aria-current="{{nav.downloads.current}}" style="padding: 10px 0 8px; text-decoration: none; color: {{nav.downloads.color}}; border-bottom: 2px solid {{nav.downloads.line}}">{{t.downloads}}</a>
+      <a class="nav-link" href="Screenshots.dc.html" aria-current="{{nav.screenshots.current}}" style="padding: 10px 0 8px; text-decoration: none; color: {{nav.screenshots.color}}; border-bottom: 2px solid {{nav.screenshots.line}}">{{t.screenshots}}</a>
+      <a class="nav-link" href="About.dc.html" aria-current="{{nav.about.current}}" style="padding: 10px 0 8px; text-decoration: none; color: {{nav.about.color}}; border-bottom: 2px solid {{nav.about.line}}">{{t.about}}</a>
+    </div>
     <div style="position: relative">
-      <button type="button" onClick="{{toggleLang}}" aria-label="{{t.langLabel}}" aria-expanded="{{langOpen}}" style="display: flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 6px; border: 0; background: transparent; color: #f3ead6; font: inherit; cursor: pointer">
+      <button type="button" data-lang-button="true" onClick="{{toggleLang}}" aria-label="{{t.langLabel}}" aria-expanded="{{langOpen}}" style="display: flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 6px; border: 0; background: transparent; color: #f3ead6; font: inherit; cursor: pointer">
         <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9S9.5 5.7 12 3z"/></svg>
         <span style="font-size: 15px">{{langCode}}</span>
         <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
       </button>
       <sc-if value="{{langOpen}}" hint-placeholder-val="{{ false }}">
-        <ul style="position: absolute; right: 0; top: 48px; margin: 0; padding: 6px; list-style: none; min-width: 160px; border-radius: 12px; border: 1px solid rgba(226,182,90,0.45); background: #0d2c20; box-shadow: 0 16px 30px rgba(0,0,0,0.45)">
+        <ul style="position: absolute; right: 0; top: 48px; z-index: 6; margin: 0; padding: 6px; list-style: none; min-width: 160px; border-radius: 12px; border: 1px solid rgba(226,182,90,0.45); background: #0d2c20; box-shadow: 0 16px 30px rgba(0,0,0,0.45)">
           <li><button type="button" lang="en" onClick="{{pickEn}}" aria-pressed="{{enOn}}" style="width: 100%; min-height: 44px; padding: 0 12px; border: 0; border-radius: 8px; background: {{enBg}}; color: #f3ead6; font: inherit; text-align: left; cursor: pointer">English</button></li>
           <li><button type="button" lang="ro" onClick="{{pickRo}}" aria-pressed="{{roOn}}" style="width: 100%; min-height: 44px; padding: 0 12px; border: 0; border-radius: 8px; background: {{roBg}}; color: #f3ead6; font: inherit; text-align: left; cursor: pointer">Română</button></li>
         </ul>
       </sc-if>
     </div>
+    <button class="menu-btn" type="button" onClick="{{toggleMenu}}" aria-label="{{t.menu}}" aria-expanded="{{menuOpen}}" style="display: none; align-items: center; justify-content: center; gap: 8px; min-width: 44px; min-height: 44px; padding: 0 14px; border: 1px solid rgba(226,182,90,0.45); border-radius: 999px; background: transparent; color: #f3ead6; font: inherit; font-size: 16px; cursor: pointer">
+      <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="{{menuIcon}}"/></svg><span class="menu-label">{{t.menu}}</span></button>
   </nav>
+  <sc-if value="{{menuOpen}}" hint-placeholder-val="{{ false }}">
+    <div class="menu-panel" style="position: absolute; left: 0; right: 0; top: 100%; padding: 6px 16px 14px; background: #08201a; border-bottom: 1px solid rgba(226,182,90,0.4); box-shadow: 0 18px 30px rgba(0,0,0,0.45)">
+      <ul style="list-style: none; margin: 0; padding: 0">
+        <li><a href="https://whist.akdscloud.eu" style="display: flex; align-items: center; min-height: 52px; padding: 0 6px; border-bottom: 1px solid rgba(226,182,90,0.15); color: #f3ead6; font-size: 18px; text-decoration: none">{{t.play}}</a></li>
+        <li><a href="Downloads.dc.html" aria-current="{{nav.downloads.current}}" style="display: flex; align-items: center; min-height: 52px; padding: 0 6px; border-bottom: 1px solid rgba(226,182,90,0.15); color: {{nav.downloads.color}}; font-size: 18px; text-decoration: none">{{t.downloads}}</a></li>
+        <li><a href="Screenshots.dc.html" aria-current="{{nav.screenshots.current}}" style="display: flex; align-items: center; min-height: 52px; padding: 0 6px; border-bottom: 1px solid rgba(226,182,90,0.15); color: {{nav.screenshots.color}}; font-size: 18px; text-decoration: none">{{t.screenshots}}</a></li>
+        <li><a href="About.dc.html" aria-current="{{nav.about.current}}" style="display: flex; align-items: center; min-height: 52px; padding: 0 6px; color: {{nav.about.color}}; font-size: 18px; text-decoration: none">{{t.about}}</a></li>
+      </ul>
+    </div>
+  </sc-if>
 </header>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props='{"active":{"editor":"enum","options":["home","downloads","screenshots","about"],"default":"home"},"lang":{"editor":"enum","options":["en","ro"],"default":"en"},"onLang":{"editor":null},"$preview":{"width":1440,"height":76}}'>
 class Component extends DCLogic {
 texts(lang) {
   if (lang === 'ro') {
-    return { navLabel: 'Principal', play: 'Joacă online', downloads: 'Descărcări', screenshots: 'Imagini', about: 'Despre', langLabel: 'Limba: română' };
+    return { brand: 'Whist', navLabel: 'Principal', play: 'Joacă online', downloads: 'Descărcări', screenshots: 'Imagini', about: 'Despre', langLabel: 'Limba: română', menu: 'Meniu' };
   }
-  return { navLabel: 'Main', play: 'Play Online', downloads: 'Downloads', screenshots: 'Screenshots', about: 'About', langLabel: 'Language: English' };
+  return { brand: 'Romanian Whist', navLabel: 'Main', play: 'Play Online', downloads: 'Downloads', screenshots: 'Screenshots', about: 'About', langLabel: 'Language: English', menu: 'Menu' };
 }
 renderVals() {
 const s = this.state || {};
 const active = this.props.active ?? 'home';
 const lang = this.props.lang ?? s.lang ?? 'en';
 const open = !!s.open;
+const menuOpen = !!s.menuOpen;
 const pick = (l) => {
   if (this.props.onLang) this.props.onLang(l);
   this.setState({ lang: l, open: false });
@@ -66,12 +81,15 @@ return {
   lang,
   nav: { downloads: item('downloads'), screenshots: item('screenshots'), about: item('about') },
   langOpen: open,
+  menuOpen,
+  menuIcon: menuOpen ? 'M6 6l12 12M18 6L6 18' : 'M4 7h16M4 12h16M4 17h16',
   langCode: lang === 'ro' ? 'RO' : 'EN',
   enOn: lang === 'en' ? 'true' : 'false',
   roOn: lang === 'ro' ? 'true' : 'false',
   enBg: lang === 'en' ? 'rgba(226,182,90,0.16)' : 'transparent',
   roBg: lang === 'ro' ? 'rgba(226,182,90,0.16)' : 'transparent',
-  toggleLang: () => this.setState({ open: !open }),
+  toggleLang: () => this.setState({ open: !open, menuOpen: false }),
+  toggleMenu: () => this.setState({ menuOpen: !menuOpen, open: false }),
   pickEn: () => pick('en'),
   pickRo: () => pick('ro')
 };

@@ -39,11 +39,16 @@ const PAGES = [
 ];
 const LANGS = ["en", "ro"];
 
-// Moments the full pages don't show: each is a viewport-sized shot, in English.
+const PHONE = { width: 390, scale: 2 };
+
+// Moments the full pages don't show: each is a window-sized shot, in English.
 const MOMENTS = [
   { shot: "screenshot-viewer", page: "Screenshots", state: { at: 0 }, height: 900 },
   { shot: "language-menu", page: "Main", children: { Header: { open: true } }, height: 260 },
   { shot: "downloads-linux", page: "Downloads", state: { desktopOs: "linux", terminalOs: "linux" }, height: 1250 },
+  { shot: "downloads-macos", page: "Downloads", state: { desktopOs: "macos", terminalOs: "macos" }, height: 1250 },
+  { shot: "menu-phone", page: "Main", children: { Header: { menuOpen: true } }, height: 700, phone: true },
+  { shot: "screenshot-viewer-phone", page: "Screenshots", state: { at: 0 }, height: 844, phone: true },
 ];
 
 // Runs in the browser, so the HTML parser and the DOM are the browser's own.
@@ -162,7 +167,7 @@ function renderPage({ sources, pageName, lang, state, children, blobs, fileOf, o
   for (const el of body.querySelectorAll("[style]")) el.setAttribute("style", asset(el.getAttribute("style")));
 
   // The canvas's language menu needs its script; here the globe links to the other language instead.
-  const globe = body.querySelector("header button[aria-expanded]");
+  const globe = body.querySelector("header button[data-lang-button]");
   if (globe) {
     const link = out.createElement("a");
     link.setAttribute("href", `../${otherLangFile}`);
@@ -196,11 +201,11 @@ async function render(pageName, lang, state = {}, children = {}) {
   });
 }
 
-async function shoot(htmlPath, shotPath, { width = 1440, height = 900, fullPage = true } = {}) {
-  const shotPage = await browser.newPage({ viewport: { width, height }, deviceScaleFactor: 1 });
+async function shoot(htmlPath, shotPath, { width = 1440, height = 900, scale = 1, fullPage = true } = {}) {
+  const shotPage = await browser.newPage({ viewport: { width, height }, deviceScaleFactor: scale });
   await shotPage.goto(pathToFileURL(htmlPath).href, { waitUntil: "networkidle" });
   await shotPage.evaluate(() => document.fonts.ready);
-  await shotPage.screenshot({ path: shotPath, fullPage, type: "jpeg", quality: 86, animations: "disabled" });
+  await shotPage.screenshot({ path: shotPath, fullPage, type: "jpeg", quality: scale > 1 ? 72 : 86, animations: "disabled" });
   await shotPage.close();
 }
 
@@ -209,8 +214,10 @@ for (const lang of LANGS) {
   mkdirSync(join(ROOT, lang), { recursive: true });
   for (const p of PAGES) {
     const html = join(ROOT, lang, `${p.file}.html`);
+    const name = `${lang}-${p.file === "index" ? "home" : p.file}`;
     writeFileSync(html, await render(p.name, lang));
-    await shoot(html, join(ROOT, "screenshots", `${lang}-${p.file === "index" ? "home" : p.file}.jpg`));
+    await shoot(html, join(ROOT, "screenshots", `${name}.jpg`));
+    await shoot(html, join(ROOT, "screenshots", `${name}-phone.jpg`), { width: PHONE.width, height: 844, scale: PHONE.scale });
     console.log(`${lang}/${p.file}.html`);
   }
 }
@@ -219,7 +226,8 @@ for (const lang of LANGS) {
 for (const m of MOMENTS) {
   const html = join(ROOT, "en", "_moment.html");
   writeFileSync(html, await render(m.page, "en", m.state, m.children));
-  await shoot(html, join(ROOT, "screenshots", `en-${m.shot}.jpg`), { height: m.height, fullPage: false });
+  const size = m.phone ? { width: PHONE.width, scale: PHONE.scale } : {};
+  await shoot(html, join(ROOT, "screenshots", `en-${m.shot}.jpg`), { ...size, height: m.height, fullPage: false });
   rmSync(html);
   console.log(`screenshots/en-${m.shot}.jpg`);
 }

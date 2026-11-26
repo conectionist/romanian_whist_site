@@ -14,8 +14,12 @@ learn the rules. It has four pages, Home, Downloads, Screenshots and About, in E
 - [`docs/site-mockup/`](docs/site-mockup/README.md) is the design the site is built to, with a
   picture of every page in both languages.
 
-It will be a static site, built with [Astro](https://astro.build/) and TypeScript, and hosted on
-GitHub Pages. Building and running it are described here once phase 1 has set it up.
+It will be a static site, built with [Astro](https://astro.build/) and TypeScript, for wide windows
+and phones alike. It runs in Docker, as Caddy serving the built pages, with Docker Compose, and is
+published on GitHub Pages until it moves to its own server. Building and running it are described
+here once phase 1 has set it up.
+
+The game is called Romanian Whist in English and Whist in Romanian.
 
 ## The game
 

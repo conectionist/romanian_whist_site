@@ -16,6 +16,15 @@ a{color:#f0cd7a}a:hover{color:#ffe3a3}
 .nav-link:hover{color:#f0cd7a !important}
 .repo:hover{border-color:rgba(226,182,90,0.8) !important}
 .toc:hover{background:rgba(226,182,90,0.12) !important}
+@media (max-width: 880px){.nav-links{display:none !important}.menu-btn{display:inline-flex !important}}
+@media (min-width: 881px){.menu-panel{display:none !important}}
+@media (max-width: 600px){
+main > section, header, footer > div{padding-left:16px !important;padding-right:16px !important}
+.brand{gap:8px !important}.brand svg{width:28px;height:28px}.brand-name{font-size:20px !important}
+.nav{gap:6px !important}.menu-btn{padding:0 !important}.menu-label{display:none}
+.stack-1{grid-template-columns:minmax(0,1fr) !important}
+.page-top{padding-top:44px !important}
+}
 </style>
 </helmet>
 <div class="felt" lang="{{lang}}" style="min-height: 100vh; color: #e9e1cd; font-family: 'Alegreya Sans', sans-serif; font-size: 17px; line-height: 1.55; overflow-x: hidden">
@@ -23,7 +32,7 @@ a{color:#f0cd7a}a:hover{color:#ffe3a3}
 <dc-import name="Header" active="about" lang="{{lang}}" on-lang="{{setLang}}" hint-size="100%,76px"></dc-import>
 
 <main>
-<section aria-labelledby="about-title" style="max-width: 1180px; margin: 0 auto; padding: 72px 48px 24px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 14px">
+<section class="page-top" aria-labelledby="about-title" style="max-width: 1180px; margin: 0 auto; padding: 72px 48px 24px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 14px">
   <h1 id="about-title" style="margin: 0; font-family: 'Playfair Display', serif; font-weight: 700; font-size: clamp(48px, 6vw, 76px); line-height: 1.05; background: linear-gradient(180deg, #f8e1a0 0%, #e2b65a 55%, #b98a33 100%); -webkit-background-clip: text; background-clip: text; color: transparent">{{t.title}}</h1>
   <p style="margin: 0; max-width: 760px; font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 500; font-size: 30px; line-height: 1.25; color: #efe4c8">{{t.subtitle}}</p>
   <nav aria-label="{{t.tocLabel}}" style="margin-top: 18px; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px">
@@ -111,7 +120,7 @@ a{color:#f0cd7a}a:hover{color:#ffe3a3}
     <h2 id="src-title" style="margin: 0; font-family: 'Playfair Display', serif; font-weight: 700; font-size: 38px; color: #f3ead6">{{t.srcTitle}}</h2>
     <p style="margin: 0; max-width: 760px; color: #c3cdbd">{{t.srcSub}}</p>
   </div>
-  <ul style="list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 18px">
+  <ul class="stack-1" style="list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 18px">
     <sc-for list="{{repos}}" as="r" hint-placeholder-count="6">
       <li><a class="repo" href="{{r.url}}" style="display: flex; flex-direction: column; gap: 6px; height: 100%; box-sizing: border-box; padding: 20px 22px; border-radius: 14px; border: 1px {{r.borderStyle}} {{r.border}}; background: rgba(0,0,0,0.22); color: #e9e1cd; text-decoration: none">
         <span style="display: flex; justify-content: space-between; gap: 10px"><strong style="font-size: 19px; color: #f3ead6">{{r.name}}</strong><span style="font-size: 13px; color: #a9b5a6">{{r.licence}}</span></span>
@@ -145,7 +154,7 @@ texts(lang) {
       subtitle: 'Spune câte mâini faci. Apoi fă exact atâtea.',
       tocLabel: 'Pe această pagină',
       gameTitle: 'Jocul',
-      game1: 'Whist-ul românesc e un joc de cărți pentru 2 până la 6 jucători. În fiecare rundă, fiecare jucător licitează câte mâini va face, iar totul e să nimerească exact.',
+      game1: 'Whist e un joc de cărți pentru 2 până la 6 jucători. În fiecare rundă, fiecare jucător licitează câte mâini va face, iar totul e să nimerească exact.',
       game2: 'Un joc merge 1-8-1, de la o carte până la opt și înapoi, sau 8-1-8, invers. La Fruntea vezi cartea fiecăruia, în afară de a ta. La Neveul nimeni nu vede nimic înainte de licitație.',
       game3: 'Regulile sunt aplicate pentru tine: cărțile pe care nu le poți juca sunt estompate, iar licitația pe care ultimul nu o poate face nu e disponibilă.',
       foreheadAlt: 'Fruntea în aplicația desktop: se vede cartea fiecăruia, în afară de a ta',

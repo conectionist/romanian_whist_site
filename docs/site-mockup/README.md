@@ -11,9 +11,9 @@ owner. Everything here is exported from it, so this folder is the reference ever
 
 | Path | What it is |
 |---|---|
-| `screenshots/` | Full-page pictures of every page at 1440 px wide, in English (`en-*`) and Romanian (`ro-*`), and three moments the full pages don't show. **Start here.** |
-| `en/`, `ro/` | Every page as static HTML. Open `en/index.html` in a browser. It needs a connection only for its fonts |
-| `canvas/` | The canvas's own files, unchanged: one `.dc.html` per page and per shared part, and `canvas.json`, the canvas's layout. These hold the exact styles and both languages' text |
+| `screenshots/` | Full-page pictures of every page in English (`en-*`) and Romanian (`ro-*`), at 1440 px wide and on a phone (`*-phone`, 390 px at twice the density), and the moments the full pages don't show. **Start here.** |
+| `en/`, `ro/` | Every page as static HTML. Open `en/index.html` in a browser, and narrow the window to see the phone layout. It needs a connection only for its fonts |
+| `canvas/` | The canvas's own files, unchanged: one `.dc.html` per page and per shared part, and `canvas.json`, the canvas's layout. These hold the exact styles, the phone layout's CSS and both languages' text |
 | `assets/` | The pictures the pages use, and `blob-ids.json`, which names the file behind each `/_blob/<id>` in `canvas/` |
 | `tools/export_mockup.mjs` | Makes `en/`, `ro/` and `screenshots/` from `canvas/` |
 
@@ -21,19 +21,29 @@ owner. Everything here is exported from it, so this folder is the reference ever
 
 | Page | Canvas file | Pictures |
 |---|---|---|
-| Home | `canvas/Main.dc.html` | `screenshots/en-home.jpg`, `ro-home.jpg` |
-| Downloads | `canvas/Downloads.dc.html` | `en-downloads.jpg`, `ro-downloads.jpg`, `en-downloads-linux.jpg` (Linux picked on both cards) |
-| Screenshots | `canvas/Screenshots.dc.html` | `en-screenshots.jpg`, `ro-screenshots.jpg`, `en-screenshot-viewer.jpg` (the viewer open) |
-| About | `canvas/About.dc.html` | `en-about.jpg`, `ro-about.jpg` |
-| Header, on every page | `canvas/Header.dc.html` | `en-language-menu.jpg` (the language menu open) |
+| Home | `canvas/Main.dc.html` | `en-home`, `ro-home`, and their `-phone` |
+| Downloads | `canvas/Downloads.dc.html` | `en-downloads`, `ro-downloads`, and their `-phone`; `en-downloads-linux` (Linux picked on both cards); `en-downloads-macos` (macOS picked: the experimental warning) |
+| Screenshots | `canvas/Screenshots.dc.html` | `en-screenshots`, `ro-screenshots`, and their `-phone`; `en-screenshot-viewer` and `en-screenshot-viewer-phone` (the viewer open) |
+| About | `canvas/About.dc.html` | `en-about`, `ro-about`, and their `-phone` |
+| Header, on every page | `canvas/Header.dc.html` | `en-language-menu` (the language menu open); `en-menu-phone` (the phone menu open) |
 | Footer, on every page | `canvas/Footer.dc.html` | at the foot of every full page |
+
+### Wide and narrow
+
+The pages reflow at two widths, in the CSS at the top of each page's `.dc.html`:
+
+- **880 px and below:** the header's four links fold behind a Menu button; the logo and the language
+  menu stay.
+- **600 px and below (phones):** the side margins drop to 16 px, every grid is one column, the
+  Menu button shows its icon alone, the card fan shrinks, the screenshot filters are two by two,
+  and the screenshot viewer's arrows move below the picture.
 
 ## What the static pages leave out
 
-On the canvas the pages work: the language menu translates them, the Windows/Linux/macOS switches
-change the download, the screenshot filters filter and a screenshot opens in a viewer. The static
-export keeps none of that. In it, the globe in the header links to the same page in the other
-language, and `screenshots/` shows the moments that need a click.
+On the canvas the pages work: the language menu translates them, the Menu button opens, the
+Windows/Linux/macOS switches change the download, the screenshot filters filter and a screenshot
+opens in a viewer. The static export keeps none of that. In it, the globe in the header links to the
+same page in the other language, and `screenshots/` shows the moments that need a click.
 
 ## Reading the canvas files
 
@@ -47,15 +57,10 @@ Each `.dc.html` is HTML with inline styles, plus a script at the end:
 - `<dc-import name="Header" …>` places `Header.dc.html` there, with the other attributes as its
   inputs.
 - `/_blob/<id>` is a picture: `assets/blob-ids.json` names its file.
+- The classes (`nav-links`, `menu-btn`, `stack-1`, `fan` and the like) exist only for the phone
+  layout's CSS.
 
-## Known flaws, fixed in the build, not here
-
-- **The terminal thumbnails on the Screenshots page are taller than the others.** Each thumbnail
-  is meant to be the same 16:10 box, with the terminal pictures shown whole inside it.
-- **The pages are drawn for a wide window.** They wrap at phone width but were never designed for
-  it. The plan designs the phone layouts.
-
-The plan's section 2 lists every place where the site departs from the mock-up on purpose.
+The plan's section 2.1 lists every place where the site departs from the mock-up on purpose.
 
 ## The pictures
 

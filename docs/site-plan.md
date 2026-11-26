@@ -1,8 +1,10 @@
 # Romanian Whist website: implementation plan
 
 > **Status: plan, 2026-11-26. Nothing is built yet.** Phase 0, the mock-up and this plan, is the
-> commit that adds this file. Phase 1 starts once the owner has read the plan and answered, or
-> accepted the defaults of, the decisions in [§17](#17-decisions-with-defaults).
+> pull request that adds this file, against `master`. Once it is merged, the feature branch is made
+> from `master` and phase 1 starts on a branch of its own ([§15](#15-phases)). The owner has
+> settled the decisions marked "decided" in [§17](#17-decisions-with-defaults); the plan assumes the
+> defaults of the others.
 
 This plan is for whoever builds the website: the owner, or an agent picking the work up cold. It
 says what to build, where each part of it comes from, in what order, and how to tell each phase is
@@ -64,8 +66,16 @@ site is built ([§8](#8-release-data)). The game's server stays the only backend
 links to it: **Play Online** goes to `https://whist.akdscloud.eu`.
 
 It is built with **Astro**, as static HTML, CSS and a few small scripts, in TypeScript, with no UI
-framework ([§3](#3-technology)), and hosted on **GitHub Pages** by default
-([§14.3](#143-hosting), D2 and D3).
+framework ([§3](#3-technology)). **It runs in Docker:** an image of Caddy serving the built pages,
+started with Docker Compose, which is how it will be deployed on the owner's VPS, beside the game's
+server; the dev server runs in Docker too ([§14.3](#143-docker)). Until the VPS takes it, the site
+is published on GitHub Pages, at `conectionist.github.io/romanian_whist_site`
+([§14.4](#144-hosting), D2 and D3).
+
+**It works on phones as well as on wide windows.** The mock-up has both layouts
+([§10.2](#102-phones-and-narrow-windows)).
+
+**The game's name** is Romanian Whist in English and Whist in Romanian (D6).
 
 ---
 
@@ -77,8 +87,10 @@ unless the difference is one listed below, the browser forces it, or the owner a
 
 Its pieces, in [`docs/site-mockup/`](site-mockup/README.md):
 
-- **`screenshots/`**: what each page must look like at 1440 px, in each language. Every visual
-  phase ends with the site's pictures beside these ([§13.4](#134-comparing-with-the-mock-up)).
+- **`screenshots/`**: what each page must look like at 1440 px and on a 390 px phone, in each
+  language, and the moments that need a click (the menus open, the viewer open, Linux or macOS
+  picked). Every visual phase ends with the site's pictures beside these
+  ([§13.5](#135-comparing-with-the-mock-up)).
 - **`canvas/*.dc.html`**: the exact values. Each element's inline style is the specification: its
   colours, sizes, gaps, radii and shadows. Each file's `texts(lang)` is the copy in both languages,
   and its `renderVals()` holds the lists (screenshots, opponents, repositories).
@@ -98,10 +110,9 @@ components and data files.
 | M4 | The version and date in each card are typed in | They come from the release data | The same |
 | M5 | The OS switches start on Windows | They start on the visitor's system when the browser says which it is, else on Windows | D8 |
 | M6 | Two animated GIFs, one of them 5 MB | Short muted looping videos with a still poster, paused for people who ask for less motion | Size, and [§10.4](#104-motion) |
-| M7 | The terminal thumbnails are taller than the others | Every thumbnail is the same 16:10 box; the terminal pictures sit whole inside it | A flaw in the mock-up |
-| M8 | Drawn for a 1440 px window only | Each page has a phone layout, down to 360 px wide, and the header has a menu button on phones | [§10.2](#102-phones-and-narrow-windows), D13 |
-| M9 | No 404 page, no credits | A 404 page in each language; a short Credits section at the end of About | Needed by a real site; the card art and fonts ask for credit (D14) |
-| M10 | Thumbnails open a viewer drawn with a fixed `div` | The viewer is a native `<dialog>`; each thumbnail is also a link to the full picture | Focus, Escape and the screen reader come with `<dialog>`, and without JavaScript the link still works ([§6.4](#64-screenshots)) |
+| M7 | No 404 page, no credits | A 404 page in each language; a short Credits section at the end of About | Needed by a real site; the card art and fonts ask for credit (D14) |
+| M8 | Thumbnails open a viewer drawn with a fixed `div` | The viewer is a native `<dialog>`; each thumbnail is also a link to the full picture | Focus, Escape and the screen reader come with `<dialog>`, and without JavaScript the link still works ([§6.4](#64-screenshots)) |
+| M9 | The phone menu is a `div` toggled by the page's state | A disclosure button with `aria-expanded` and `aria-controls`; without JavaScript, a `<details>` | It works for the keyboard and screen readers, and with JavaScript off ([§6.1](#61-on-every-page)) |
 
 Anything else the build wants to change is asked of the owner first, with the mock-up's picture and
 the proposed one side by side.
@@ -122,16 +133,40 @@ the proposed one side by side.
 | Type checks | `@astrojs/check` | Checks `.astro` files as `tsc` checks `.ts` |
 | Unit tests | **Vitest** | The small logic: release data, OS detection, the dictionaries |
 | Browser tests | **Playwright**, Chromium | End to end, accessibility (with `@axe-core/playwright`) and the screenshots for comparison |
-| Node | 24 in CI, 22.23 or later locally | Astro 7's floor is 22.23.4 |
+| Node | 26, the latest, in CI and the Docker image; 22.23.4 at least locally | Astro 7's floor is 22.23.4 |
+| Container | Docker, Docker Compose; Caddy serves the pages | [§14.3](#143-docker) |
 
-**Versions**, current on 2026-11-26 and pinned exactly, as the browser client pins its own:
-`astro` 7.4.13, `@astrojs/check` 0.9.12, `@astrojs/sitemap` 3.7.6, `@playwright/test` 1.65.1,
-`vitest` 5.1.2, `@fontsource/playfair-display`, `@fontsource/cormorant-garamond` and
-`@fontsource/alegreya-sans` 5.3.0, `sharp` 0.35.5.
+### 3.1 Always the latest versions
 
-**TypeScript stays on 6.0.x** (6.0.3 today): `@astrojs/check` asks for TypeScript 5 or 6, and the
-native TypeScript 7 is not a drop-in for its language service yet. Move to 7 when `@astrojs/check`
-allows it.
+**Every framework, library, tool, GitHub Action and Docker image is at its latest release**, unless
+there is a good reason not to, and the reason is written in the table below. Each phase starts by
+checking (`npm outdated`, the actions' and the images' latest tags) and updating, in a commit of its
+own, before its work. Dependabot keeps them current between phases
+([§14.6](#146-ci-and-automation)). Versions are pinned exactly in `package-lock.json`, the
+workflows and the Dockerfile, so a build is the same build tomorrow.
+
+The latest on 2026-11-26:
+
+| What | Version |
+|---|---|
+| `astro` | 7.4.13 |
+| `@astrojs/check` | 0.9.12 |
+| `@astrojs/sitemap` | 3.7.6 |
+| `@playwright/test` | 1.65.1 |
+| `@axe-core/playwright` | 4.14.1 |
+| `vitest` | 5.1.2 |
+| `sharp` | 0.35.5 |
+| `@fontsource/playfair-display`, `@fontsource/cormorant-garamond`, `@fontsource/alegreya-sans` | 5.3.0 |
+| `@types/node` | 26.6.11 |
+| Node, in CI and the image | 26.13.1 (`node:26.13.1-trixie-slim`) |
+| Caddy | 2.11.9 (`caddy:2.11.9-alpine`) |
+| The actions | as the browser client's workflow: `actions/checkout@v7`, `actions/setup-node@v7`, `docker/build-push-action@v7`, … checked again in phase 1 |
+
+**The exceptions, and why:**
+
+| What | Held at | Instead of | Why | Until |
+|---|---|---|---|---|
+| TypeScript | 6.0.3 | 7.0.2 | `@astrojs/check`, the only checker of `.astro` files, asks for TypeScript 5 or 6, in its latest and in its beta; npm refuses to install it beside 7 | A release of `@astrojs/check` that accepts 7 |
 
 **Check Astro's own documentation in phase 1** before relying on a feature by name. This plan names
 what is needed (i18n routing, the image pipeline, the content-security-policy support, the sitemap),
@@ -146,7 +181,15 @@ astro.config.mjs        site URL, base path, i18n, integrations, CSP
 package.json            scripts, exact versions, "version"
 package-lock.json
 tsconfig.json
-public/                 copied as is: favicon set, robots.txt, the OG images, CNAME
+Dockerfile              the build, then Caddy serving dist/ (§14.3)
+.dockerignore
+compose.yaml            the site from this checkout, and the dev server, on this machine
+deploy/
+  Caddyfile             the site's headers, caching and 404 pages
+  docker-compose.yml    the published image, with automatic HTTPS, for the VPS
+  .env.example
+CHANGELOG.md            from 1.0.0
+public/                 copied as is: favicon set, robots.txt, the OG images
 src/
   i18n/
     en.ts               the English text: the source, and the shape ro.ts must match
@@ -183,12 +226,13 @@ src/
 tests/
   unit/                 Vitest
   e2e/                  Playwright: pages, behaviour, accessibility
-  look/                 Playwright: the comparison screenshots (§13.4)
+  look/                 Playwright: the comparison screenshots (§13.5)
 tools/
   import_assets.py      copies the art and screenshots from the sibling repositories (§9)
   make_clips.sh         the GIFs to video (§9.3)
   pair_shots.py         the site's pictures beside the mock-up's
   check_links.mjs       every internal link and anchor in dist/ resolves, in both languages
+  smoke.mjs             checks a running site: pages, 404s, headers, caching (§13.4)
 docs/
   site-plan.md          this file
   site-mockup/          the mock-up
@@ -203,7 +247,7 @@ obvious, and the page itself is written once. (Astro's dynamic routes could prod
 file; the thin routes are clearer and cost eight tiny files.)
 
 **Every internal link goes through `localizedPath(lang, path)`**, which adds `/ro` for Romanian
-and Astro's base path when the site is served from a sub-path ([§14.3](#143-hosting)). No `href`
+and Astro's base path when the site is served from a sub-path ([§14.4](#144-hosting)). No `href`
 to a page of the site is written by hand.
 
 ---
@@ -239,10 +283,12 @@ custom properties, and components use the properties, never the raw values.
 | `--soon-border` | `rgba(169, 181, 166, 0.45)` | Android and other things to come, dashed or muted |
 | `--header-bg`, `--footer-bg` | `rgba(5,20,14,0.72)`, `rgba(4,16,11,0.85)` | The bars |
 | `--terminal-bg` | `#161b22` | Behind the terminal screenshots |
+| `--warn` | `#f5b971` | The macOS warning's icon; its border at 60% and its ground at 9% |
+| `--warn-title`, `--warn-text` | `#f8cf9a`, `#e9dcc6` | The macOS warning's title and text |
 | `--focus` | `#f8e1a0` | The focus ring, new: the mock-up draws none |
 
 Every pair of text and background is checked for a contrast of 4.5:1 at least, by axe in the
-browser tests ([§13.2](#132-in-the-browser)). The values above pass on `--felt`; a change of either
+browser tests ([§13.2](#132-in-the-browser-playwright)). The values above pass on `--felt`; a change of either
 side must keep it so.
 
 ### 5.2 Type
@@ -265,6 +311,8 @@ px, card titles 27 px (Downloads) and 21 to 25 px elsewhere, small capitals labe
 
 - **Width:** content at most 1180 px, 1280 px for the hero, the screenshot grid and the footer;
   48 px either side on a wide window, 16 px on a phone.
+- **Breakpoints,** the mock-up's two: 880 px and below, the header's links fold behind the Menu
+  button; 600 px and below, the phone layout ([§10.2](#102-phones-and-narrow-windows)).
 - **Header:** 76 px high. **Radii:** 999 px for buttons and chips, 16 to 18 px for cards and
   panels, 12 to 14 px for notes and small cards, 10 px for pictures inside a frame.
 - **Shadows:** cards `0 22px 44px rgba(0,0,0,0.35)`, the framed screenshot
@@ -297,38 +345,44 @@ comes from, and how it behaves. Text is never written in a component: it comes f
 
 ### 6.1 On every page
 
-**`Base.astro`** sets `<html lang>`, the `<title>` ("Romanian Whist" alone on Home, else "Downloads
-· Romanian Whist" and the like), the description, the canonical URL, the `hreflang` links to both
+**`Base.astro`** sets `<html lang>`, the `<title>` (the game's name alone on Home, else "Downloads
+· Romanian Whist", "Descărcări · Whist" and the like), the description, the canonical URL, the `hreflang` links to both
 languages and `x-default` (English), the Open Graph and Twitter tags ([§11](#11-search-engines-sharing-and-speed)),
 the favicon set and `theme-color` (`#0b2a1e`). Its body is a skip link, the header, `<main>`, the
 footer.
 
-**The header** (`canvas/Header.dc.html`, every picture's top; `en-language-menu.jpg`):
+**The header** (`canvas/Header.dc.html`, every picture's top; `en-language-menu.jpg`,
+`en-menu-phone.jpg`):
 
-- the spade and "Romanian Whist", a link to Home;
+- the spade and the game's name, Romanian Whist or Whist, a link to Home;
 - Play Online (the game, in the same tab), Downloads, Screenshots, About; the current page's link is
   `--gold-text` with a 2 px `--gold` underline and `aria-current="page"`;
 - the language menu: the globe, `EN` or `RO`, a chevron. It opens a small list, English and
   Română, each a **link to the same page in that language**, the current one marked. Without
   JavaScript it is a `<details>`/`<summary>` and still works. Picking a language remembers it
   (D5);
-- on a phone, below 720 px, the four links fold behind a Menu button (D13, [§10.2](#102-phones-and-narrow-windows)).
+- at 880 px and below, the four links fold behind a Menu button, which opens them as a list under
+  the header, 52 px a row; on a phone the button is its icon alone, with its label for screen
+  readers. It is a disclosure (`aria-expanded`, `aria-controls`), a `<details>` without JavaScript
+  (M9, D13, [§10.2](#102-phones-and-narrow-windows)). The language menu stays beside it. Opening
+  one closes the other.
 
 **The footer** (`canvas/Footer.dc.html`): the logo, the motto ("One game. Everywhere."), one line
 on the project; three columns of links: Play (Play online, Downloads, Screenshots, Rules), Source
 code (Engine, Desktop, Terminal, Browser, Server) and Help (Report a problem, About); then a last
-line, "© 2026 Romanian Whist" and the licences. The year is the build's year.
+line, "© 2026" with the game's name, and the licences. The year is the build's year.
 
 ### 6.2 Home
 
-`canvas/Main.dc.html`; `screenshots/en-home.jpg`, `ro-home.jpg`.
+`canvas/Main.dc.html`; `screenshots/en-home.jpg`, `ro-home.jpg` and their `-phone`.
 
-1. **Hero.** On the left, centred: the title "Romanian Whist" on two lines in gold, the ornament,
+1. **Hero.** On the left, centred: the title in gold, "Romanian / Whist" on two lines in English
+   and "Whist" in Romanian, the ornament,
    the tagline, one paragraph, the two buttons (Play Online, gold, to the game; Download, outline,
    to Downloads), and the row of four clients (Desktop, Terminal, Browser, Android (soon)). On the
    right: **the card fan**, the real cards 10♠ J♦ Q♣ K♥ A♠ from left to right, at −30°, −15°,
    0°, 15° and 30° about a point below their centre, each 200 px wide, over a soft gold glow. The
-   fan is decoration (`aria-hidden`). On a phone it goes below the text and shrinks.
+   fan is decoration (`aria-hidden`). On a phone it goes below the text, at 62% of its size.
 2. **Four features**, divided by thin gold rules: 2 to 6 players; nine computer opponents; 1-8-1 /
    8-1-8 with forehead and hidden rounds; English and Romanian.
 3. **A seat at the table:** one framed screenshot of the desktop client, with its caption and a
@@ -339,8 +393,8 @@ line, "© 2026 Romanian Whist" and the licences. The year is the build's year.
 
 ### 6.3 Downloads
 
-`canvas/Downloads.dc.html`; `screenshots/en-downloads.jpg`, `ro-downloads.jpg`,
-`en-downloads-linux.jpg`.
+`canvas/Downloads.dc.html`; `screenshots/en-downloads.jpg`, `ro-downloads.jpg` and their
+`-phone`, `en-downloads-linux.jpg`, `en-downloads-macos.jpg`.
 
 1. **Title and tagline,** "Play your way.", the ornament, and a large faint spade behind, top
    right, as decoration.
@@ -357,7 +411,22 @@ line, "© 2026 Romanian Whist" and the licences. The year is the build's year.
    on GitHub, with links to both releases pages.
 4. **The motto band:** two cards (A♠, A♥) and "One game. Everywhere."
 
-**How to start each one**, from the mock-up (the owner checks the terminal lines, D17):
+**macOS is experimental** (D17, `en-downloads-macos.jpg`). Neither client's macOS build is signed
+by Apple, and the owner wants most people to stay away from it unless they know what they are
+doing. So when macOS is picked on either card:
+
+- a warning sits between the switch and the button: a triangle icon, **"Experimental on macOS"**,
+  and one paragraph: the build isn't signed by Apple, so macOS refuses to open (or run) it at
+  first; it has to be allowed in System Settings › Privacy & Security; download it only if you know
+  what that means. The text is the mock-up's, in both languages (`macTitle`, `macDesktop`,
+  `macTerminal`);
+- the button says **"Download for macOS (experimental)"**;
+- without JavaScript, the macOS line of the list of three files carries the same warning.
+
+The Home page's platform chips still say "Windows, Linux, macOS": the label is where the download
+is.
+
+**How to start each one**, from the mock-up:
 
 | | Windows | Linux | macOS |
 |---|---|---|---|
@@ -367,8 +436,9 @@ line, "© 2026 Romanian Whist" and the licences. The year is the build's year.
 **The OS switch.** Three buttons with `aria-pressed`, in a group labelled for its client. Picking
 one changes that card's button, file and start line; the two cards switch on their own. The first
 choice is the visitor's system when the browser says which it is (`navigator.userAgentData.platform`,
-else the user-agent string), else Windows (D8). **Without JavaScript** the switch is not shown, and
-the card lists all three files, each with its own link and start line.
+else the user-agent string), else Windows (D8). A Mac visitor gets macOS, with its warning.
+**Without JavaScript** the switch is not shown, and the card lists all three files, each with its
+own link and start line.
 
 **Release facts** come from [§8](#8-release-data). The date is written in the page's language with
 `Intl.DateTimeFormat`: "25 Nov 2026", "25 nov. 2026". The size is rounded: "44 MB", "613 KB".
@@ -376,8 +446,8 @@ Optionally, a "SHA-256" line that copies the digest GitHub gives (D18).
 
 ### 6.4 Screenshots
 
-`canvas/Screenshots.dc.html`; `screenshots/en-screenshots.jpg`, `ro-screenshots.jpg`,
-`en-screenshot-viewer.jpg`.
+`canvas/Screenshots.dc.html`; `screenshots/en-screenshots.jpg`, `ro-screenshots.jpg` and their
+`-phone`, `en-screenshot-viewer.jpg`, `en-screenshot-viewer-phone.jpg`.
 
 1. **Title and tagline,** "See it in play.", then **the filters**: All 18, Desktop 8, Terminal 6,
    Browser 4. The counts are computed from the data.
@@ -395,14 +465,14 @@ navigation is cancelled). It shows the full picture, the client, the caption and
 Previous, Next and Close buttons. Escape closes it (the dialog's own behaviour), the left and right
 arrow keys move through the pictures **while the dialog is open** (the listener is on the dialog,
 never the document), focus returns to the tile that opened it, and the order follows the current
-filter. A swipe on a phone moves too.
+filter. On a phone, Previous and Next sit below the picture, and a swipe moves too.
 
 **The data**, in `src/data/screenshots.ts`: 18 entries, each with its file, its client and a caption
 key. The captions are the mock-up's, in `en.ts` and `ro.ts`.
 
 ### 6.5 About
 
-`canvas/About.dc.html`; `screenshots/en-about.jpg`, `ro-about.jpg`.
+`canvas/About.dc.html`; `screenshots/en-about.jpg`, `ro-about.jpg` and their `-phone`.
 
 1. **Title, tagline and the four contents chips**, which link to the sections below.
 2. **The game** (`#game`): three paragraphs beside the forehead-round screenshot.
@@ -413,7 +483,7 @@ key. The captions are the mock-up's, in `en.ts` and `ro.ts`.
 4. **Nine computer opponents** (`#opponents`): a table, in a box that scrolls sideways on a phone.
 5. **Open source** (`#source`): six cards, one per repository, with its licence; Android dashed,
    "planned".
-6. **Credits** (`#credits`), new (M9, D14): the card art (Byron Knoll, public domain), the fonts
+6. **Credits** (`#credits`), new (M7, D14): the card art (Byron Knoll, public domain), the fonts
    (SIL Open Font License), the portraits seen in the screenshots (made with AI image tools, as the
    desktop README says).
 
@@ -425,10 +495,11 @@ against the desktop client's translation ([§7.2](#72-the-romanian-words)).
 
 ### 6.6 The 404 page
 
-Not in the mock-up (M9). The header and footer, the ornament, a title ("This card isn't in the
+Not in the mock-up (M7). The header and footer, the ornament, a title ("This card isn't in the
 deck." / "Cartea asta nu e în pachet."), one line, and the gold button to Home. The owner approves
-the copy. GitHub Pages serves `404.html` for every missing path, so the English one is the default;
-it links to the Romanian home as well.
+the copy. Caddy answers a missing path under `/ro/` with the Romanian page and any other with the
+English one ([§14.3](#143-docker)). GitHub Pages serves `404.html` for every missing path, so
+there the English one links to the Romanian home as well.
 
 ---
 
@@ -477,7 +548,9 @@ the same thing. The mock-up already does:
 **Romanian is written with the comma below:** ș and ț, never the cedilla forms ş and ţ. A unit test
 fails on a cedilla anywhere in `ro.ts`.
 
-**The game's name stays "Romanian Whist"** in the logo and titles of both languages (D6).
+**The game's name is Romanian Whist in English and Whist in Romanian** (D6, decided by the owner):
+in the logo, the home page's title, the footer, the page titles, the sharing pictures and the
+structured data. In running Romanian text it is "Whist" too ("Whist e un joc de cărți…").
 
 ---
 
@@ -602,16 +675,26 @@ asked for less motion and the clip is on screen (an `IntersectionObserver`), and
 
 ### 10.2 Phones and narrow windows
 
-The mock-up is drawn at 1440 px (M8). Each page phase designs its page down to 360 px and shows the
-owner pictures at 390 px. The plan's starting point:
+The site is for phones as much as for wide windows, and **the mock-up has both layouts**: every
+page at 390 px in both languages (`screenshots/*-phone.jpg`), the phone menu open and the viewer
+open on a phone. Its CSS has two breakpoints, which the site keeps:
 
-- the side margin drops to 16 px; the hero stacks, the card fan under the text and smaller;
-- grids collapse: features 2 by 2 then 1, Downloads' cards to one column, screenshots to 2 then 1,
-  the repositories to 1;
-- the header keeps the logo and the language menu, and folds the four links behind a Menu button
-  below 720 px (D13), a disclosure that opens a panel under the header;
-- the opponents table scrolls sideways in its own box; nothing else makes the page scroll sideways
-  (a browser test checks it at 360 px).
+- **880 px and below:** the header's four links fold behind the Menu button (D13); the logo and the
+  language menu stay;
+- **600 px and below:** the side margin drops to 16 px; the header's name shrinks to 20 px and the
+  Menu button to its icon; every grid is one column (features, Downloads' cards and notes,
+  screenshots, repositories); the features lose their dividing rules for rules between them; the
+  card fan sits under the hero's text at 62%; the page tops lose some padding; the screenshot
+  filters are two by two; the viewer's arrows go below the picture; Downloads' version badges move
+  under the card's title.
+
+Between the two, and up from 600 px, the grids reflow by themselves (`auto-fit` with a minimum
+column width), as the mock-up's do.
+
+Each page phase checks its page at 360, 390, 768 and 1440 px, and shows the owner its 390 px
+pictures beside the mock-up's. The opponents table scrolls sideways in its own box; nothing else
+makes the page scroll sideways (a browser test checks it at 360 px). Every target is 44 px at least,
+on a phone too.
 
 ### 10.3 Without JavaScript
 
@@ -635,7 +718,7 @@ play by themselves.
   pointing to it.
 - **Open Graph and Twitter tags**: title, description, the sharing picture of the page's language,
   `og:locale` `en_GB` / `ro_RO` and the other as `og:locale:alternate`.
-- **Structured data** on Home: one JSON-LD `VideoGame` with the name, description, the platforms,
+- **Structured data** on Home: one JSON-LD `VideoGame` with the name (in the page's language), description, the platforms,
   the URL of the game, and the licence. Optional, small (D19).
 - **Speed:** static HTML; JavaScript only for the four small scripts, a few kilobytes in all;
   responsive images, lazy below the fold, with their sizes set so nothing jumps; two preloaded
@@ -651,15 +734,18 @@ play by themselves.
   site's own. The only things a visitor's browser asks of anyone else are the links they click: the
   game, GitHub.
 - **A content-security-policy** of `default-src 'self'; object-src 'none'; base-uri 'self';
-  form-action 'none'` at least. GitHub Pages can't set headers, so it goes in a
-  `<meta http-equiv>`, where `frame-ancestors` has no effect: on Pages, the site can be framed by
-  others, which the plan accepts for a site with no logins or forms.
+  form-action 'none'; frame-ancestors 'none'` at least, with `X-Content-Type-Options: nosniff`,
+  `Referrer-Policy: strict-origin-when-cross-origin` and no `Server` header, as the browser client's
+  Caddyfile sets them. **In the Docker image, Caddy sends them as headers**
+  ([§14.3](#143-docker)). GitHub Pages can't set headers, so the published build also carries the
+  policy in a `<meta http-equiv>`, where `frame-ancestors` has no effect: on Pages, until the VPS,
+  the site can be framed by others, which the plan accepts for a site with no logins or forms.
   Astro inlines small scripts and styles by default; use Astro's built-in CSP support, which adds
   their hashes, if Astro 7 has it, else build with inline stylesheets and scripts turned off so
   `'self'` covers them. Checked in a browser test: no CSP violation on any page.
 - **External links** go to known places only (`links.ts`); none opens a new window.
 - **The release data** is read at build time only; the visitor's browser never calls GitHub's API.
-- **Dependencies** are pinned, updated by Dependabot ([§14.4](#144-ci-and-automation)), and `npm
+- **Dependencies** are pinned, updated by Dependabot ([§14.6](#146-ci-and-automation)), and `npm
   audit` runs in CI.
 
 ---
@@ -702,14 +788,27 @@ play by themselves.
   its other-language twin, and every picture exists.
 - the size budgets of [§11](#11-search-engines-sharing-and-speed).
 
-### 13.4 Comparing with the mock-up
+### 13.4 The image
+
+In CI, on every pull request ([§14.6](#146-ci-and-automation)):
+
+- the image builds, and `caddy validate` passes on its Caddyfile inside it;
+- `docker compose up` starts it, and a smoke script (`tools/smoke.mjs`, as the browser client has)
+  checks that every page answers 200 in both languages, a missing page answers 404 with the right
+  language's page, the headers of [§12](#12-security-and-privacy) are there, the hashed assets are
+  cached for a year and the pages are not;
+- the browser tests run once more against the container, not just `astro preview`;
+- the image stays under its size budget (Caddy and the pages: 80 MB), summed from its layers as the
+  browser client does.
+
+### 13.5 Comparing with the mock-up
 
 `tests/look/` is a Playwright project, run only when asked (`npm run shots`). It takes each page in
-both languages at 1440 px, full height, plus the three moments the mock-up has (the viewer open, the
-language menu open, Downloads with Linux picked), and the same pages at 390 px, into
-`build/shots/<name>/`. `tools/pair_shots.py` (Pillow) puts each 1440 px picture beside the mock-up's
-of the same name, labelled "site" and "mock-up", as `compare-<name>.png`. The 390 px pictures have
-no mock-up and are shown on their own.
+both languages at 1440 px and at 390 px (twice the density), full height, plus the six moments the
+mock-up has (the viewer open, wide and on a phone; the language menu open; the phone menu open;
+Downloads with Linux and with macOS picked), into `build/shots/<name>/`, with the mock-up's names.
+`tools/pair_shots.py` (Pillow) puts each picture beside the mock-up's of the same name, labelled
+"site" and "mock-up", as `compare-<name>.png`.
 
 `build/` is git-ignored: the comparisons are for the owner's review, not the repository.
 
@@ -728,122 +827,228 @@ no mock-up and are shown on their own.
 | `npm run preview` | Serves `dist/` |
 | `npm test` | Vitest |
 | `npm run e2e` | Builds, then Playwright's e2e tests |
-| `npm run shots` | The comparison pictures and their pairs ([§13.4](#134-comparing-with-the-mock-up)) |
+| `npm run shots` | The comparison pictures and their pairs ([§13.5](#135-comparing-with-the-mock-up)) |
 | `npm run releases:update` | Refreshes `releases.fallback.json` |
+| `docker compose --profile dev up dev` | The dev server in a container, at `http://127.0.0.1:4321`, reloading as files change |
+| `docker compose build site` then `docker compose up site` | The image built from this checkout, at `http://127.0.0.1:8000` |
 
 On the owner's machine, under `nice` and with few workers, as `CLAUDE.md` says.
 
-### 14.2 The version
+### 14.2 Versions, tags and the changelog
 
-`package.json`'s `version` is the site's; the footer can show it with the build's short commit in a
-`title`. There are no releases or tags: what is on `master` is what is live (D15).
+As the server and the browser client do:
 
-### 14.3 Hosting
+- **`package.json`'s `version` is the site's.** It stays `0.x` while the plan is built, and becomes
+  `1.0.0` when the feature branch is merged into `master` ([§15](#15-phases)).
+- **Each release is a tag on `master`,** `v1.0.0` and so on, and the tag must be the version in
+  `package.json`: CI checks it, as the browser client's does.
+- **A tag publishes the image** to `ghcr.io/conectionist/romanian_whist_site`, as `1.0.0` and `1.0`;
+  each push to `master` publishes `latest`; every build is also `sha-<commit>`
+  ([§14.6](#146-ci-and-automation)). The VPS pins a version.
+- **`CHANGELOG.md`** starts at `1.0.0`, in the clients' style: a section per version, with
+  "Added", "Changed" and "Fixed".
+- The footer shows the version, with the build's short commit in its `title`.
 
-**GitHub Pages, by default** (D3): free, HTTPS, deployed by the workflow below, with a custom domain
-through `public/CNAME` and a DNS record. What Pages can't do: response headers (so the CSP is a
-`<meta>`, [§12](#12-security-and-privacy)) and redirects (the 404 page covers mistyped paths).
+### 14.3 Docker
 
-**The address** is the owner's (D2). Until there is one, the site is at
-`https://conectionist.github.io/romanian_whist_site/`, under a base path: Astro's `site` and `base`
-are set from one place, and every link already goes through `localizedPath` ([§4](#4-code-layout)),
-so moving to a domain later changes two settings and adds `CNAME`.
+**The image** (`Dockerfile`), in two stages, as the browser client's:
 
-The other way, if the owner prefers it: serve `dist/` from the Caddy that already serves the game,
-on the VPS, at its own domain. Then real headers are possible, and the deploy is an image or an
-`rsync` from CI. It ties the site to the game's machine.
+1. **Build:** `node:26.13.1-trixie-slim` (Debian, not Alpine, as the browser client chose for its
+   tools' glibc binaries); `npm ci` with npm's cache mounted; then `npm run build`. The build
+   reads the release data from GitHub ([§8](#8-release-data)), with the token passed as a BuildKit
+   secret (`--secret id=github_token`), never a build argument or a layer; without it, or with no
+   network, it uses the fallback and says so. `SITE_URL` and `BASE_PATH` are build arguments, the
+   image's defaults being the VPS's address and `/`. The commit is a build argument too, as the
+   browser client's `WHIST_WEB_COMMIT` is, since the build context has no git history.
+2. **Serve:** `caddy:2.11.9-alpine`, with `deploy/Caddyfile` and `dist/` in `/srv`, the licence in
+   `/usr/share/licenses/`, OCI labels (title, source, licence `AGPL-3.0-or-later`), and
+   `caddy validate` run at build time.
 
-### 14.4 CI and automation
+**The Caddyfile** (`deploy/Caddyfile`), modelled on the browser client's:
+
+- `{$SITE_ADDRESS::80}`: a domain name gets HTTPS by itself; `:80` serves plain HTTP;
+- `file_server` from `/srv`, `encode zstd gzip`, hidden dotfiles;
+- the headers of [§12](#12-security-and-privacy), set again in `handle_errors` so error pages carry
+  them too;
+- caching: Astro's hashed files (`/_astro/*`) for a year, `immutable`; the pages `no-cache`;
+  everything else an hour; only on successful answers;
+- a missing page: `/ro/404.html` under `/ro/`, else `/404.html`, with status 404.
+
+**`compose.yaml`**, at the root, for this machine:
+
+- **`site`:** built from this checkout, `ports: ["127.0.0.1:8000:80"]`, `SITE_ADDRESS=:80`, hardened
+  as the browser client's (`read_only`, `tmpfs: [/tmp]`, `cap_drop: [ALL]`,
+  `no-new-privileges`);
+- **`dev`,** in the `dev` profile: `node:26.13.1-trixie-slim` running `npm ci && npm run dev --
+  --host 0.0.0.0`, with the checkout mounted and `node_modules` in a named volume, at
+  `127.0.0.1:4321`. Nothing but Docker is needed on the machine.
+
+**`deploy/docker-compose.yml`**, for the VPS, as the browser client's: the published image at a
+pinned tag, `restart: unless-stopped`, the same hardening with `NET_BIND_SERVICE`, ports 80 and
+443 (and 443/udp), `SITE_ADDRESS` from `.env` (refusing to start without it), Caddy's two volumes,
+and log rotation. **`deploy/.env.example`** names the settings. If the VPS's Caddy for the game
+already holds ports 80 and 443, the site's container joins that Caddy instead, as the server's
+README describes for its own image; which of the two is a phase 8 question.
+
+**Not now:** putting it on the VPS is phase 8, when the owner says so (D3).
+
+### 14.4 Hosting
+
+**Until the VPS: GitHub Pages**, at `https://conectionist.github.io/romanian_whist_site/` (D2). It
+is built by `deploy.yml` with `BASE_PATH=/romanian_whist_site/`, and every link already goes through
+`localizedPath` ([§4](#4-code-layout)), so the base path is one setting. Pages has no response
+headers (so the CSP is also a `<meta>`, [§12](#12-security-and-privacy)) and no redirects.
+
+**Later: the owner's VPS, behind Caddy** (D3), from the Docker image and
+`deploy/docker-compose.yml` ([§14.3](#143-docker)), at an address the owner chooses then. GitHub
+Pages is turned off when the VPS serves the site, and the old address points to the new one with a
+small redirect page.
+
+### 14.5 Branches
+
+See [§15](#15-phases): `master`, then the feature branch, then one branch per phase.
+
+### 14.6 CI and automation
 
 Modelled on the browser client's workflow.
 
-**`.github/workflows/ci.yml`**, on pull requests and on pushes to `master`, `paths-ignore` for
-`**/*.md` (the site's text is in TypeScript, so no page is written in Markdown):
+**`.github/workflows/ci.yml`**: on pull requests (to the feature branch and to `master`), on pushes
+to `master` and the feature branch, on version tags (`v*.*.*`), and by hand; `paths-ignore` for
+`**/*.md` (the site's text is in TypeScript, so no page is written in Markdown).
 
 - `permissions: contents: read`; `concurrency` that cancels a pull request's older run but never
-  one on `master`; `timeout-minutes` on every job;
-- Node 24 with npm's cache; `npm ci`; `npm audit --omit=dev`;
-- `npm run check`, `npm test`, `npm run build` (link check and budgets included);
-- Playwright's Chromium, then the e2e tests; on failure, the report as an artifact;
-- the built `dist/` as an artifact, so a pull request's site can be downloaded and looked at.
+  one on `master`; `timeout-minutes` on every job.
+- **`build`:** Node 26 with npm's cache; `npm ci`; `npm audit --omit=dev`; `npm run check`,
+  `npm test`, `npm run build` (link check and budgets included); Playwright's Chromium, then the
+  e2e tests; on failure, the report as an artifact; the built `dist/` as an artifact, so a pull
+  request's site can be downloaded and looked at.
+- **`docker`:** a tag must be `package.json`'s version; the compose files pass
+  `docker compose config`; the image builds (with Buildx and the Actions cache); then
+  [§13.4](#134-the-image): compose up, the smoke script, the browser tests against the container,
+  the size budget; the logs on failure.
+- **`publish`:** after both, on a push to `master` or a tag, or a manual run that asks for it, never
+  a pull request: the image to `ghcr.io/conectionist/romanian_whist_site` with `docker/metadata-action`'s
+  tags (`latest` from `master`, the version and `major.minor` from a tag, `sha-<commit>`), with
+  `packages: write`.
 
-**`.github/workflows/deploy.yml`**: on pushes to `master`, by hand (`workflow_dispatch`) and once a
-day (`schedule`), builds with the release data and deploys to Pages
-(`actions/upload-pages-artifact`, `actions/deploy-pages`, with `pages: write` and
-`id-token: write`). The scheduled run says in its summary which releases it found.
+**`.github/workflows/deploy.yml`** (GitHub Pages, until the VPS): on pushes to `master`, by hand
+(`workflow_dispatch`) and once a day (`schedule`), builds with the release data and the Pages base
+path and deploys (`actions/upload-pages-artifact`, `actions/deploy-pages`, with `pages: write` and
+`id-token: write`). The scheduled run says in its summary which releases it found. On the VPS, the
+daily refresh becomes a scheduled rebuild of the image, decided in phase 8.
 
-**`.github/dependabot.yml`**: GitHub Actions and npm, monthly, each grouped into one pull request,
-as the terminal client does for its actions.
+**`.github/dependabot.yml`**: npm, GitHub Actions and Docker (the two base images), monthly, each
+grouped into one pull request, as the terminal client does for its actions.
 
 ---
 
 ## 15. Phases
 
-Each phase is a branch and a pull request. Its outcome is written under it when it closes: what was
+Each phase has a branch and a pull request. Its outcome is written under it when it closes: what was
 built, what the owner decided, and where the build departed from this plan. Sizes are relative: S,
 M, L.
 
-**Branches** (D12): each phase's branch comes off `master`, `site/phase-N-<name>`, and its pull
-request is against `master`. A phase is merged when its CI, a code review and the owner's review
-have all passed, and its outcome is written here.
+### 15.1 Branches and tags
 
-**Code reviews**, as the server plan's section 13 sets them out:
+As in the desktop client's redesign, the branches are stacked (D12, decided by the owner):
 
-1. **The reviewer starts cold:** a fresh agent with none of the implementer's context, read-only,
-   at extra-high effort. Its prompt holds the repository, the phase branch and `master`, the phase's
-   requirements as they stand on `master`, `CLAUDE.md` and the rating scales.
-2. **Each finding is rated 1 to 5** for severity (cosmetic 1, an edge case 3, a broken page or a
-   wrong download 5) and for how hard it is to fix (a line or two 1, a new test 3, a redesign 5).
-3. **The implementer reports them in a table**, checks each against the code, and says what to fix,
-   in what order, and what to skip.
-4. **The owner decides.** Nothing is fixed before that.
-5. **After the fixes,** the checks and the tests run again and CI runs again. The owner decides
-   whether the fixes get a cold review of their own.
-6. **A phase's outcome is written after its review**, so a reviewer never reads the implementer's
-   account.
+```
+master ─── site/v1 (the feature branch) ─┬─ site/phase-1-base
+                                          ├─ site/phase-2-home
+                                          └─ …
+```
 
-**Every visual phase ends with the comparisons** of [§13.4](#134-comparing-with-the-mock-up),
-linked in the closing message, with a line on what matches the mock-up and what still differs, and
-the 390 px pictures for the phone layouts. `CLAUDE.md` says how.
+- **Phase 0,** this plan and the mock-up, is merged into `master` directly, so that the feature
+  branch and every phase start from them.
+- **The feature branch, `site/v1`,** is made from `master` once phase 0 is merged (D21).
+- **Each phase's branch** comes off the feature branch, `site/phase-N-<name>`, and its pull request
+  is **against the feature branch, never `master`**. When a phase is done it is merged into the
+  feature branch with a merge commit.
+- **When every phase is done,** the feature branch is merged into `master` by a pull request of its
+  own, `package.json` becomes `1.0.0`, and `master` is tagged `v1.0.0` ([§14.2](#142-versions-tags-and-the-changelog)).
+- After that, work goes on a branch off `master`, PR'd against `master`, and each release is a tag.
+
+### 15.2 How each phase runs
+
+Set by the owner on 2026-11-26. `CLAUDE.md` holds the same steps, for the agent running them.
+
+1. **Planning.** The phase starts in plan mode, with the main agent on opus at high or extra-high
+   effort (fable, when the subscription offers it). It reads this plan, the phase's part of the
+   mock-up and the code so far, checks for newer versions ([§3.1](#31-always-the-latest-versions)),
+   and writes the phase's detailed plan: the files, the order, the tests, and its answers to any
+   open decision. The owner approves it before anything is written.
+2. **Implementation.** A sub-agent on sonnet at extra-high effort builds the approved plan on the
+   phase branch, commits, and runs the checks and tests (under `nice`, as `CLAUDE.md` says). The
+   main agent checks the result against the plan and the mock-up.
+3. **The pull request.** The main agent opens it against the feature branch, with the comparison
+   pictures ([§13.5](#135-comparing-with-the-mock-up)) for a visual phase.
+4. **The code review.** A separate sub-agent on opus at extra-high effort, which **starts cold**: a
+   fresh agent, never a fork, with none of the main agent's or the implementer's context,
+   read-only. Its prompt holds only the repository, the phase branch and the feature branch, the
+   phase's requirements as they stand on the feature branch, `CLAUDE.md`, and the rating scales.
+   The phase's outcome is not written yet, so it can't read anyone's account of the work.
+5. **The findings.** Each is rated 1 to 5 for **severity** (cosmetic 1, an edge case 3, a broken
+   page or a wrong download 5) and for **fix complexity** (a line or two 1, a new test 3, a
+   redesign 5). The main agent puts them in a table, checks each one against the code, and
+   recommends, for each: **fix now**, **defer** (written in this plan as later work) or **open a
+   GitHub issue**, with the order of the fixes.
+6. **The owner decides.** Nothing is fixed before that.
+7. **The fixes** are made by the same sonnet implementer (a new one on sonnet at extra-high effort
+   if it is gone), then the checks, the tests and CI run again.
+8. **Another round?** After each round of fixes, the main agent says whether it recommends another
+   review, and why: for complex fixes, or ones that touched much, it usually does. Another round is
+   run the same way, by a fresh opus reviewer at extra-high effort, of the fix commits. The owner
+   decides.
+9. **The outcome** is written under the phase in this plan, with the pictures linked in the closing
+   message.
+10. **The merge.** The main agent asks the owner first, then merges the phase's pull request into
+   the feature branch.
 
 ### Phase 0: the mock-up and the plan — S ✅ COMPLETE
 
 - **Work:** the mock-up on a design canvas, approved by the owner; its export into
-  `docs/site-mockup/` (static pages in both languages, full-page pictures, the canvas's files and
-  pictures, the export tool); this plan; `CLAUDE.md`, `README.md` and `.gitignore`.
-- **Done when:** the owner has the plan.
+  `docs/site-mockup/` (static pages in both languages, full-page pictures wide and on a phone, the
+  canvas's files and pictures, the export tool); this plan; `CLAUDE.md`, `README.md` and
+  `.gitignore`.
+- **Done when:** the owner has the plan, and its pull request is merged into `master`.
 
-**Outcome** (branch `claude/happy-wozniak-2x27tk`):
+**Outcome** (branch `claude/happy-wozniak-2x27tk`, its pull request against `master`):
 
 - The owner chose, on the canvas: Downloads grouped by client (desktop, terminal, browser, Android)
   rather than by operating system; the card fan from 10 to Ace; `https://whist.akdscloud.eu` for
   Play Online; a working language switch, with the desktop client's Romanian words.
 - The owner chose Astro, plain CSS and TypeScript with no UI framework, and a static site with no
   backend, after the options were laid out.
-- The mock-up's one known flaw, the terminal thumbnails' height, is left in it and fixed in the
-  build (M7).
+- After the first draft of this plan, the owner asked for, and the mock-up and plan now have:
+  "Whist" as the Romanian name; macOS labelled experimental on Downloads; phone layouts for every
+  page; the latest versions of everything; Docker and Docker Compose; stacked branches with tags;
+  and the way each phase runs ([§15.2](#152-how-each-phase-runs)). The mock-up's terminal
+  thumbnails, which were taller than the others, were fixed on the canvas at the same time.
 
 ### Phase 1: the base — M
 
 - **Work:**
-  - the Astro project: `package.json` with exact versions and the scripts of [§14.1](#141-scripts),
-    `tsconfig.json`, `astro.config.mjs` (site, base, i18n, sitemap, CSP), `.github/` (CI, deploy
-    disabled until phase 7, Dependabot);
+  - the versions checked and updated first ([§3.1](#31-always-the-latest-versions));
+  - the Astro project: `package.json` (version `0.1.0`) with exact versions and the scripts of
+    [§14.1](#141-scripts), `tsconfig.json`, `astro.config.mjs` (site, base, i18n, sitemap, CSP);
+  - Docker: the `Dockerfile`, `deploy/Caddyfile`, `compose.yaml` with `site` and `dev`,
+    `deploy/docker-compose.yml` and `.env.example`, `.dockerignore` ([§14.3](#143-docker));
+  - `.github/`: CI with its three jobs, `deploy.yml` turned off until phase 7, Dependabot;
   - `tokens.css` and `global.css` ([§5](#5-the-look-tokens-and-parts)), the fonts, the felt;
-  - `Base.astro`, the header (logo, links, current page, the language menu, the phone menu), the
-    footer, the skip link, `Icon`, `Ornament`, `Button`, `Panel`;
+  - `Base.astro`, the header (logo, links, current page, the language menu, the Menu button and its
+    list), the footer, the skip link, `Icon`, `Ornament`, `Button`, `Panel`;
   - the i18n machinery and both dictionaries with the header's, footer's and metadata's text;
   - the eight routes, each with its title and an empty body, and the two 404 pages;
   - `import_assets.py` and the imported assets; the favicon set;
-  - the test setup: Vitest with the dictionary and `localizedPath` tests, Playwright with the
-    header's tests and axe, the look project and `pair_shots.py`, `check_links.mjs`;
-  - the README's "Building and running" section.
+  - the tests: Vitest with the dictionary and `localizedPath` tests; Playwright with the header's
+    tests and axe; the look project and `pair_shots.py`; `check_links.mjs`; the smoke script;
+  - the README's "Building and running" section, with and without Docker.
 - **Done when:**
-  - CI is green on the pull request;
-  - every route answers in both languages and the language menu goes between them, with and
-    without JavaScript;
-  - the comparisons of the header and footer (the top and foot of each page) are linked, at 1440
-    and 390 px;
+  - CI is green on the pull request, the `docker` job included;
+  - every route answers in both languages, from `npm run dev`, from the dev container and from the
+    image, and the language menu goes between them, with and without JavaScript;
+  - the comparisons of the header and footer (the top and foot of each page) are linked, wide and
+    on a phone, with the language menu and the phone menu open;
   - the owner approves.
 
 ### Phase 2: Home — M
@@ -851,55 +1056,69 @@ the 390 px pictures for the phone layouts. `CLAUDE.md` says how.
 - **Work:** [§6.2](#62-home): the hero with the card fan, the features, the framed screenshot per
   language, How to play, the platforms band; the page's phone layout; its text in both languages;
   its e2e and axe tests.
-- **Done when:** `compare-en-home` and `compare-ro-home` are linked, with the page at 390 px; no
-  difference remains that the owner hasn't accepted; the owner approves.
+- **Done when:** `compare-en-home`, `compare-ro-home` and their `-phone` are linked; no difference
+  remains that the owner hasn't accepted; the owner approves.
 
 ### Phase 3: Downloads and the release data — M
 
-- **Work:** [§8](#8-release-data) (the fetch, the mapping, the fallback, their tests, `releases:update`);
-  [§6.3](#63-downloads): the four cards, the OS switch with its no-JavaScript fallback and the
-  visitor's system first, the release facts, the notes, the motto band; the phone layout; tests.
+- **Work:** [§8](#8-release-data) (the fetch, the mapping, the fallback, their tests,
+  `releases:update`, the token as a secret in the image's build); [§6.3](#63-downloads): the four
+  cards, the OS switch with its no-JavaScript fallback and the visitor's system first, the macOS
+  warning, the release facts, the notes, the motto band; the phone layout; tests.
 - **Done when:**
   - every download button is the right file of the latest release, checked against GitHub by a
     test that reads the built page;
+  - picking macOS shows the warning and the "(experimental)" button, on both cards, with and
+    without JavaScript;
   - a build with GitHub unreachable still produces the page, from the fallback, and says so;
-  - `compare-en-downloads`, `compare-ro-downloads` and `compare-en-downloads-linux` are linked;
-  - the owner approves, the start lines included (D17).
+  - `compare-en-downloads`, `compare-ro-downloads`, their `-phone`, `compare-en-downloads-linux`
+    and `compare-en-downloads-macos` are linked;
+  - the owner approves.
 
 ### Phase 4: Screenshots — M
 
 - **Work:** [§6.4](#64-screenshots): the data, the thumbnails and full sizes from the image
-  pipeline, the grid with the fixed 16:10 box (M7), the filters, the `<dialog>` viewer, the clips
+  pipeline, the grid of 16:10 boxes, the filters, the `<dialog>` viewer, the clips
   ([§9.3](#93-the-clips)); the phone layout; tests.
-- **Done when:** `compare-en-screenshots`, `compare-ro-screenshots` and
-  `compare-en-screenshot-viewer` are linked; the viewer passes its keyboard and focus tests; the
-  page is within its budget; the owner approves.
+- **Done when:** `compare-en-screenshots`, `compare-ro-screenshots`, their `-phone`,
+  `compare-en-screenshot-viewer` and `compare-en-screenshot-viewer-phone` are linked; the viewer
+  passes its keyboard and focus tests; the page is within its budget; the owner approves.
 
 ### Phase 5: About — S
 
 - **Work:** [§6.5](#65-about): the game, the rules and scoring, the opponents, the repositories,
   the credits; the facts checked against their sources and the check written in the outcome; the
   phone layout; tests.
-- **Done when:** `compare-en-about` and `compare-ro-about` are linked; every fact has its source
-  named in the outcome; the owner approves.
+- **Done when:** `compare-en-about`, `compare-ro-about` and their `-phone` are linked; every fact
+  has its source named in the outcome; the owner approves.
 
 ### Phase 6: finish — M
 
 - **Work:** the 404 pages ([§6.6](#66-the-404-page)); the metadata, sitemap, `robots.txt`, the
-  sharing pictures and the structured data ([§11](#11-search-engines-sharing-and-speed)); the CSP
-  and its test ([§12](#12-security-and-privacy)); the size budgets; a full keyboard and screen
-  reader pass over every page (NVDA or VoiceOver, by the owner or noted as not done); reduced
-  motion; a last look at every page at 360, 390, 768, 1024, 1440 and 1920 px.
+  sharing pictures and the structured data ([§11](#11-search-engines-sharing-and-speed)); the CSP,
+  as headers and as the `<meta>`, and its test ([§12](#12-security-and-privacy)); the size budgets;
+  a full keyboard and screen reader pass over every page (NVDA or VoiceOver, by the owner or noted
+  as not done); reduced motion; a last look at every page at 360, 390, 768, 1024, 1440 and 1920 px.
 - **Done when:** every check of [§13](#13-testing) passes in CI; the comparisons of every page are
   linked once more; the owner approves.
 
-### Phase 7: launch — S
+### Phase 7: release — S
 
-- **Work:** the address (D2) and the hosting (D3); the deploy workflow turned on; the custom domain
-  and HTTPS; a smoke test against the live site (every page answers, the downloads resolve); then,
-  the owner deciding each, small pull requests in the other repositories that link to the site: the
-  READMEs, and the browser client's About.
-- **Done when:** the site is live at its address, the scheduled rebuild has run once by itself, and
+- **Work:** `deploy.yml` turned on; `CHANGELOG.md` with `1.0.0`; `package.json` at `1.0.0`; the
+  feature branch's pull request into `master`; once the owner has approved and it is merged, the
+  tag `v1.0.0`, which publishes the image; the site live on GitHub Pages; a smoke test against it
+  (every page answers, the downloads resolve); then, the owner deciding each, small pull requests in
+  the other repositories that link to the site: the READMEs, and the browser client's About.
+- **Done when:** the site is live at `conectionist.github.io/romanian_whist_site`, the image
+  `1.0.0` is published, the scheduled rebuild has run once by itself, and the owner approves.
+
+### Phase 8: the VPS — S, when the owner says
+
+- **Work:** the site on the owner's VPS from `deploy/docker-compose.yml` and the published image,
+  beside the game's server: its own Caddy or the game's, its address, HTTPS; the daily refresh of
+  the release data there; GitHub Pages turned off and its address sent to the new one; the links
+  in the other repositories updated. On a branch off `master`, with a tag of its own.
+- **Done when:** the site is served from the VPS with its headers, the old address leads to it, and
   the owner approves.
 
 ### Later, when there is a reason
@@ -909,6 +1128,7 @@ the 390 px pictures for the phone layouts. `CLAUDE.md` says how.
 - **A news or changes page**, if the owner wants one: the clients' changelogs, gathered at build
   time.
 - **The releases trigger** of [§8](#8-release-data), from the client repositories.
+- **macOS:** if the builds are ever signed and notarised, the "experimental" label goes.
 
 ---
 
@@ -917,16 +1137,19 @@ the 390 px pictures for the phone layouts. `CLAUDE.md` says how.
 | Risk | What keeps it small |
 |---|---|
 | Astro 7's API differs from what this plan assumes | The plan names features, not calls; phase 1 checks each against Astro's documentation and writes any difference in its outcome |
-| `@astrojs/check` and TypeScript 7 | TypeScript stays on 6.0.x until `@astrojs/check` allows 7 ([§3](#3-technology)) |
+| The latest version of something breaks something | Each phase updates first, in a commit of its own, and the checks and tests run before the phase's work; a version held back is written in [§3.1](#31-always-the-latest-versions) with its reason |
+| `@astrojs/check` and TypeScript 7 | TypeScript stays on 6.0.x until `@astrojs/check` allows 7 ([§3.1](#31-always-the-latest-versions)) |
 | GitHub's API is down, rate-limited or answers differently at build time | The workflow's token; the committed fallback; a master build fails loudly while the scheduled one keeps the site up; unit tests on recorded answers ([§8](#8-release-data)) |
+| The image's build has no network, or no token | The fallback, and the build says so; the token is a BuildKit secret, so it is never in a layer |
 | A client renames its release files | The mapping test, and the build's check that every system has its file, fail and say which |
-| The CSP and Astro's inline scripts and styles | Astro's CSP support, or no inlining; a browser test fails on any violation |
+| The CSP and Astro's inline scripts and styles | Astro's CSP support, or no inlining; a browser test fails on any violation, against the image too |
 | GitHub turns off a scheduled workflow after 60 days with no activity in the repository, so new releases would stop reaching the site | The deploy workflow's summary names the releases it found; the release trigger of §8 removes the need; until then, a push or a manual run re-enables it, and phase 7's outcome says so |
-| GitHub Pages' limits: no headers, a base path until there is a domain | The `<meta>` CSP; `localizedPath` for every link, so the base path is one setting |
+| GitHub Pages' limits: no headers, a base path | The `<meta>` CSP; `localizedPath` for every link, so the base path is one setting; both go with the VPS |
 | The pages are heavy: 18 screenshots and two clips | The image pipeline's sizes, lazy loading, videos instead of GIFs, and the budgets in CI |
 | The Romanian drifts from the games' own words | The glossary of [§7.2](#72-the-romanian-words); the owner reads every page in Romanian in its phase |
-| The mock-up shows only wide windows | Every page phase designs its phone layout and shows it to the owner at 390 px |
+| The phone layouts lose something the wide ones have | The mock-up's phone pictures are compared in every page phase, as the wide ones are |
 | The site's facts drift from the clients (a new opponent, a new platform) | Each fact's source is named in phase 5's outcome; the release data is automatic |
+| A reviewer sees the implementer's account and is biased by it | The reviewer is a fresh agent with only the requirements; the outcome is written after the review ([§15.2](#152-how-each-phase-runs)) |
 
 ---
 
@@ -937,24 +1160,27 @@ The plan assumes each default until the owner decides otherwise.
 | # | Question | Default |
 |---|---|---|
 | D1 | What is the site built with? | **Decided by the owner, 2026-11-26:** Astro, TypeScript and plain CSS, static, no UI framework, no backend |
-| D2 | Its address? | The owner's to choose. Until then, `conectionist.github.io/romanian_whist_site`. The game keeps `whist.akdscloud.eu` |
-| D3 | Where is it hosted? | GitHub Pages. The owner's VPS behind Caddy is the alternative ([§14.3](#143-hosting)) |
-| D4 | Romanian addresses? | English slugs under `/ro/`: `/ro/downloads/`. Translated slugs (`/ro/descarcari/`) are possible later, with redirects lost on Pages |
+| D2 | Its address? | **Decided by the owner, 2026-11-26:** `conectionist.github.io/romanian_whist_site` for now. The game keeps `whist.akdscloud.eu` |
+| D3 | Where is it hosted? | **Decided by the owner, 2026-11-26:** eventually the owner's VPS, behind Caddy, from the Docker image with Docker Compose (phase 8, not now); GitHub Pages until then |
+| D4 | Romanian addresses? | English slugs under `/ro/`: `/ro/downloads/`. Translated slugs (`/ro/descarcari/`) are possible later |
 | D5 | Does the site pick the language for the visitor? | No detection. An explicit pick is remembered, and only then does `/` send the visitor to `/ro/` |
-| D6 | The game's name in Romanian? | "Romanian Whist", as in the mock-up. "Whist românesc" is the alternative |
+| D6 | The game's name? | **Decided by the owner, 2026-11-26:** Romanian Whist in English, Whist in Romanian |
 | D7 | Where does a download button go? | To the file of the latest release, from the build's release data; to the releases page when that file is missing |
-| D8 | Which system do the OS switches start on? | The visitor's, when the browser says; else Windows |
+| D8 | Which system do the OS switches start on? | The visitor's, when the browser says (macOS with its warning); else Windows |
 | D9 | How does a new release reach the site? | A daily scheduled rebuild, plus by hand. A trigger from the client repositories later, if wanted |
 | D10 | The GIFs? | Short muted looping videos with a poster, not playing by themselves under reduced motion |
 | D11 | Analytics? | None. If wanted later, a cookieless one the site hosts or that keeps no personal data, named in this plan first |
-| D12 | Branches? | One branch per phase off `master`, `site/phase-N-<name>`, its pull request against `master`, as in the server and the browser client |
-| D13 | The header on a phone? | The links fold behind a Menu button below 720 px; the logo and the language menu stay |
+| D12 | Branches? | **Decided by the owner, 2026-11-26:** stacked: `master`, a feature branch, a branch per phase off it; phases merge into the feature branch, the feature branch into `master`; releases are tags ([§15.1](#151-branches-and-tags)) |
+| D13 | The header on a phone? | The links fold behind a Menu button at 880 px and below, as in the mock-up; the logo and the language menu stay |
 | D14 | Credits? | A short Credits section at the end of About: the card art, the fonts, the portraits |
-| D15 | Versions and releases? | A `version` in `package.json`, no tags or releases; `master` is live |
+| D15 | Versions and releases? | `package.json`'s version, tags on `master` checked against it, the image published per tag, `CHANGELOG.md` from 1.0.0 ([§14.2](#142-versions-tags-and-the-changelog)) |
 | D16 | Where does "Report a problem" go? | The desktop client's issues, as in the mock-up. The alternative is a short page that lists each repository's issues |
-| D17 | The terminal client's start lines? | The mock-up's. The owner confirms them, macOS especially, where a downloaded binary may also need its quarantine flag removed |
+| D17 | macOS? | **Decided by the owner, 2026-11-26:** both clients' macOS builds are labelled experimental, with a warning, so that only people who know what they're doing install them ([§6.3](#63-downloads)) |
 | D18 | Show each file's SHA-256? | Yes, small, under File, copied from GitHub's digest |
 | D19 | Structured data (JSON-LD)? | Yes, one `VideoGame` on Home |
+| D20 | Versions? | **Decided by the owner, 2026-11-26:** the latest of everything, unless there is a good reason, written down ([§3.1](#31-always-the-latest-versions)) |
+| D21 | The feature branch's name? | `site/v1` |
+| D22 | How does each phase run? | **Decided by the owner, 2026-11-26:** [§15.2](#152-how-each-phase-runs) |
 
 ---
 

@@ -13,6 +13,15 @@ a{color:#f0cd7a}a:hover{color:#ffe3a3}
 .nav-link:hover{color:#f0cd7a !important}
 .repo:hover{border-color:rgba(226,182,90,0.8) !important}
 .toc:hover{background:rgba(226,182,90,0.12) !important}
+@media (max-width: 880px){.nav-links{display:none !important}.menu-btn{display:inline-flex !important}}
+@media (min-width: 881px){.menu-panel{display:none !important}}
+@media (max-width: 600px){
+main > section, header, footer > div{padding-left:16px !important;padding-right:16px !important}
+.brand{gap:8px !important}.brand svg{width:28px;height:28px}.brand-name{font-size:20px !important}
+.nav{gap:6px !important}.menu-btn{padding:0 !important}.menu-label{display:none}
+.stack-1{grid-template-columns:minmax(0,1fr) !important}
+.page-top{padding-top:44px !important}
+}
 
 
 body{margin:0}
@@ -26,16 +35,18 @@ body{margin:0}
 
 
 
-<header lang="ro" style="position: relative; z-index: 5; width: 100%; box-sizing: border-box; min-height: 76px; padding: 10px 48px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 32px; border-bottom: 1px solid rgba(226,182,90,0.4); background: rgba(5,20,14,0.72); font-family: 'Alegreya Sans', sans-serif; color: #f3ead6">
-  <a href="index.html" style="display: flex; align-items: center; gap: 12px; color: #f3ead6; text-decoration: none">
+<header lang="ro" style="position: relative; z-index: 5; width: 100%; box-sizing: border-box; min-height: 76px; padding: 10px 48px; display: flex; align-items: center; justify-content: space-between; gap: 10px 24px; border-bottom: 1px solid rgba(226,182,90,0.4); background: rgba(5,20,14,0.72); font-family: 'Alegreya Sans', sans-serif; color: #f3ead6">
+  <a class="brand" href="index.html" style="display: flex; align-items: center; gap: 12px; color: #f3ead6; text-decoration: none">
     <svg aria-hidden="true" width="34" height="34" viewBox="0 0 24 24"><path fill="#e2b65a" d="M12 2.5C9.3 6.2 4 9.4 4 13.6c0 2.6 2 4.6 4.5 4.6 1.2 0 2.3-.5 3-1.3-.2 1.7-.9 3.1-2.2 4.1h5.4c-1.3-1-2-2.4-2.2-4.1.7.8 1.8 1.3 3 1.3 2.5 0 4.5-2 4.5-4.6 0-4.2-5.3-7.4-8-11.1z"></path></svg>
-    <span style="font-family: 'Playfair Display', serif; font-weight: 600; font-size: 23px">Romanian Whist</span>
+    <span class="brand-name" style="font-family: 'Playfair Display', serif; font-weight: 600; font-size: 23px; white-space: nowrap">Whist</span>
   </a>
-  <nav aria-label="Principal" style="display: flex; flex-wrap: wrap; align-items: center; gap: 4px 30px; font-size: 17px">
-    <a class="nav-link" href="https://whist.akdscloud.eu" style="padding: 10px 0 8px; text-decoration: none; color: #f3ead6; border-bottom: 2px solid transparent">Joacă online</a>
-    <a class="nav-link" href="downloads.html" aria-current="false" style="padding: 10px 0 8px; text-decoration: none; color: #f3ead6; border-bottom: 2px solid transparent">Descărcări</a>
-    <a class="nav-link" href="screenshots.html" aria-current="false" style="padding: 10px 0 8px; text-decoration: none; color: #f3ead6; border-bottom: 2px solid transparent">Imagini</a>
-    <a class="nav-link" href="about.html" aria-current="page" style="padding: 10px 0 8px; text-decoration: none; color: #f0cd7a; border-bottom: 2px solid #e2b65a">Despre</a>
+  <nav class="nav" aria-label="Principal" style="display: flex; align-items: center; gap: 4px 24px; font-size: 17px">
+    <div class="nav-links" style="display: flex; flex-wrap: wrap; align-items: center; gap: 4px 30px">
+      <a class="nav-link" href="https://whist.akdscloud.eu" style="padding: 10px 0 8px; text-decoration: none; color: #f3ead6; border-bottom: 2px solid transparent">Joacă online</a>
+      <a class="nav-link" href="downloads.html" aria-current="false" style="padding: 10px 0 8px; text-decoration: none; color: #f3ead6; border-bottom: 2px solid transparent">Descărcări</a>
+      <a class="nav-link" href="screenshots.html" aria-current="false" style="padding: 10px 0 8px; text-decoration: none; color: #f3ead6; border-bottom: 2px solid transparent">Imagini</a>
+      <a class="nav-link" href="about.html" aria-current="page" style="padding: 10px 0 8px; text-decoration: none; color: #f0cd7a; border-bottom: 2px solid #e2b65a">Despre</a>
+    </div>
     <div style="position: relative">
       <a href="../en/about.html" style="display: flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 6px; border: 0; background: transparent; color: #f3ead6; font: inherit; cursor: pointer; text-decoration: none" aria-label="Limba: română">
         <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9S9.5 5.7 12 3z"></path></svg>
@@ -44,12 +55,15 @@ body{margin:0}
       </a>
       
     </div>
+    <button class="menu-btn" type="button" aria-label="Meniu" aria-expanded="false" style="display: none; align-items: center; justify-content: center; gap: 8px; min-width: 44px; min-height: 44px; padding: 0 14px; border: 1px solid rgba(226,182,90,0.45); border-radius: 999px; background: transparent; color: #f3ead6; font: inherit; font-size: 16px; cursor: pointer">
+      <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"></path></svg><span class="menu-label">Meniu</span></button>
   </nav>
+  
 </header>
 
 
 <main>
-<section aria-labelledby="about-title" style="max-width: 1180px; margin: 0 auto; padding: 72px 48px 24px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 14px">
+<section class="page-top" aria-labelledby="about-title" style="max-width: 1180px; margin: 0 auto; padding: 72px 48px 24px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 14px">
   <h1 id="about-title" style="margin: 0; font-family: 'Playfair Display', serif; font-weight: 700; font-size: clamp(48px, 6vw, 76px); line-height: 1.05; background: linear-gradient(180deg, #f8e1a0 0%, #e2b65a 55%, #b98a33 100%); -webkit-background-clip: text; background-clip: text; color: transparent">Despre joc</h1>
   <p style="margin: 0; max-width: 760px; font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 500; font-size: 30px; line-height: 1.25; color: #efe4c8">Spune câte mâini faci. Apoi fă exact atâtea.</p>
   <nav aria-label="Pe această pagină" style="margin-top: 18px; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px">
@@ -64,7 +78,7 @@ body{margin:0}
 <section id="game" aria-labelledby="game-title" style="max-width: 1180px; margin: 0 auto; padding: 48px 48px; box-sizing: border-box; display: flex; flex-wrap: wrap; align-items: center; gap: 40px">
   <div style="flex: 1 1 400px; min-width: 0; display: flex; flex-direction: column; gap: 16px">
     <h2 id="game-title" style="margin: 0; font-family: 'Playfair Display', serif; font-weight: 700; font-size: 38px; color: #f3ead6">Jocul</h2>
-    <p style="margin: 0; color: #c3cdbd">Whist-ul românesc e un joc de cărți pentru 2 până la 6 jucători. În fiecare rundă, fiecare jucător licitează câte mâini va face, iar totul e să nimerească exact.</p>
+    <p style="margin: 0; color: #c3cdbd">Whist e un joc de cărți pentru 2 până la 6 jucători. În fiecare rundă, fiecare jucător licitează câte mâini va face, iar totul e să nimerească exact.</p>
     <p style="margin: 0; color: #c3cdbd">Un joc merge 1-8-1, de la o carte până la opt și înapoi, sau 8-1-8, invers. La Fruntea vezi cartea fiecăruia, în afară de a ta. La Neveul nimeni nu vede nimic înainte de licitație.</p>
     <p style="margin: 0; color: #c3cdbd">Regulile sunt aplicate pentru tine: cărțile pe care nu le poți juca sunt estompate, iar licitația pe care ultimul nu o poate face nu e disponibilă.</p>
   </div>
@@ -149,7 +163,7 @@ body{margin:0}
     <h2 id="src-title" style="margin: 0; font-family: 'Playfair Display', serif; font-weight: 700; font-size: 38px; color: #f3ead6">Cod sursă deschis</h2>
     <p style="margin: 0; max-width: 760px; color: #c3cdbd">Un singur motor de joc în C++20 conține toate regulile și toți adversarii virtuali. Fiecare versiune a jocului se bazează pe el, așa că toate joacă exact același joc.</p>
   </div>
-  <ul style="list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 18px">
+  <ul class="stack-1" style="list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 18px">
     
       <li><a class="repo" href="https://github.com/conectionist/romanian_whist_engine" style="display: flex; flex-direction: column; gap: 6px; height: 100%; box-sizing: border-box; padding: 20px 22px; border-radius: 14px; border: 1px solid rgba(226,182,90,0.35); background: rgba(0,0,0,0.22); color: #e9e1cd; text-decoration: none">
         <span style="display: flex; justify-content: space-between; gap: 10px"><strong style="font-size: 19px; color: #f3ead6">Motorul de joc</strong><span style="font-size: 13px; color: #a9b5a6">AGPL-3.0</span></span>
@@ -192,7 +206,7 @@ body{margin:0}
     <div style="flex: 2 1 300px; min-width: 0; display: flex; flex-direction: column; gap: 12px">
       <a href="index.html" style="display: flex; align-items: center; gap: 10px; color: #f3ead6; text-decoration: none">
         <svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24"><path fill="#e2b65a" d="M12 2.5C9.3 6.2 4 9.4 4 13.6c0 2.6 2 4.6 4.5 4.6 1.2 0 2.3-.5 3-1.3-.2 1.7-.9 3.1-2.2 4.1h5.4c-1.3-1-2-2.4-2.2-4.1.7.8 1.8 1.3 3 1.3 2.5 0 4.5-2 4.5-4.6 0-4.2-5.3-7.4-8-11.1z"></path></svg>
-        <span style="font-family: 'Playfair Display', serif; font-weight: 600; font-size: 20px">Romanian Whist</span>
+        <span style="font-family: 'Playfair Display', serif; font-weight: 600; font-size: 20px">Whist</span>
       </a>
       <p style="margin: 0; max-width: 340px; font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 21px; color: #e2d6b8">Un singur joc. Oriunde.</p>
       <p style="margin: 0; max-width: 360px">Gratuit și open source. Toate versiunile sunt construite pe același motor de joc.</p>
@@ -219,7 +233,7 @@ body{margin:0}
     </div>
   </div>
   <div style="max-width: 1280px; margin: 0 auto; padding: 16px 48px 28px; box-sizing: border-box; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 24px; border-top: 1px solid rgba(226,182,90,0.18); font-size: 14px; color: #a9b5a6">
-    <span>© 2026 Romanian Whist</span>
+    <span>© 2026 Whist</span>
     <span>Aplicațiile sub GPL-3.0; motorul, serverul și pagina web sub AGPL-3.0</span>
   </div>
 </footer>

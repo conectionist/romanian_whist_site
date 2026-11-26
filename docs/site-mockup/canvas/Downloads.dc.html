@@ -17,6 +17,18 @@ a{color:#f0cd7a}a:hover{color:#ffe3a3}
 .btn-gold:hover{filter:brightness(1.07)}
 .btn-line:hover{background:rgba(226,182,90,0.12) !important}
 .seg:hover{color:#f3ead6 !important}
+@media (max-width: 880px){.nav-links{display:none !important}.menu-btn{display:inline-flex !important}}
+@media (min-width: 881px){.menu-panel{display:none !important}}
+@media (max-width: 600px){
+main > section, header, footer > div{padding-left:16px !important;padding-right:16px !important}
+.brand{gap:8px !important}.brand svg{width:28px;height:28px}.brand-name{font-size:20px !important}
+.nav{gap:6px !important}.menu-btn{padding:0 !important}.menu-label{display:none}
+.stack-1{grid-template-columns:minmax(0,1fr) !important}
+.card-title{flex-basis:calc(100% - 52px) !important}
+.card-body{padding:20px 18px 22px !important}
+.page-top{padding-top:44px !important}
+.deco-spade{display:none}
+}
 </style>
 </helmet>
 <div class="felt" lang="{{lang}}" style="min-height: 100vh; color: #e9e1cd; font-family: 'Alegreya Sans', sans-serif; font-size: 17px; line-height: 1.5; overflow-x: hidden">
@@ -24,8 +36,8 @@ a{color:#f0cd7a}a:hover{color:#ffe3a3}
 <dc-import name="Header" active="downloads" lang="{{lang}}" on-lang="{{setLang}}" hint-size="100%,76px"></dc-import>
 
 <main>
-<section aria-labelledby="dl-title" style="position: relative; max-width: 1180px; margin: 0 auto; padding: 72px 48px 40px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 14px">
-  <svg aria-hidden="true" width="230" height="230" viewBox="0 0 24 24" style="position: absolute; right: 40px; top: 30px; opacity: 0.1"><path fill="#7fcf9a" d="M12 2.5C9.3 6.2 4 9.4 4 13.6c0 2.6 2 4.6 4.5 4.6 1.2 0 2.3-.5 3-1.3-.2 1.7-.9 3.1-2.2 4.1h5.4c-1.3-1-2-2.4-2.2-4.1.7.8 1.8 1.3 3 1.3 2.5 0 4.5-2 4.5-4.6 0-4.2-5.3-7.4-8-11.1z"/></svg>
+<section class="page-top" aria-labelledby="dl-title" style="position: relative; max-width: 1180px; margin: 0 auto; padding: 72px 48px 40px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 14px">
+  <svg class="deco-spade" aria-hidden="true" width="230" height="230" viewBox="0 0 24 24" style="position: absolute; right: 40px; top: 30px; opacity: 0.1"><path fill="#7fcf9a" d="M12 2.5C9.3 6.2 4 9.4 4 13.6c0 2.6 2 4.6 4.5 4.6 1.2 0 2.3-.5 3-1.3-.2 1.7-.9 3.1-2.2 4.1h5.4c-1.3-1-2-2.4-2.2-4.1.7.8 1.8 1.3 3 1.3 2.5 0 4.5-2 4.5-4.6 0-4.2-5.3-7.4-8-11.1z"/></svg>
   <h1 id="dl-title" style="position: relative; margin: 0; font-family: 'Playfair Display', serif; font-weight: 700; font-size: clamp(48px, 6vw, 76px); line-height: 1.05; background: linear-gradient(180deg, #f8e1a0 0%, #e2b65a 55%, #b98a33 100%); -webkit-background-clip: text; background-clip: text; color: transparent">{{t.title}}</h1>
   <p style="position: relative; margin: 0; font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 500; font-size: 30px; color: #efe4c8">{{t.subtitle}}</p>
   <div aria-hidden="true" style="display: flex; align-items: center; gap: 10px; color: #e2b65a; margin-top: 4px">
@@ -38,15 +50,15 @@ a{color:#f0cd7a}a:hover{color:#ffe3a3}
 </section>
 
 <section aria-label="{{t.versionsLabel}}" style="max-width: 1180px; margin: 0 auto; padding: 16px 48px 48px; box-sizing: border-box">
-  <ul style="list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(440px, 1fr)); gap: 24px">
+  <ul class="stack-1" style="list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(440px, 1fr)); gap: 24px">
 
     <!-- Desktop -->
     <li style="display: flex; flex-direction: column; border-radius: 18px; border: 1px solid rgba(226,182,90,0.42); background: linear-gradient(180deg, rgba(20,52,38,0.88), rgba(8,28,20,0.94)); box-shadow: 0 22px 44px rgba(0,0,0,0.35); overflow: hidden">
       <img src="{{desktopShot}}" alt="{{t.desktopAlt}}" style="display: block; width: 100%; aspect-ratio: 16 / 8; object-fit: cover; object-position: center 40%; border-bottom: 1px solid rgba(226,182,90,0.3)">
-      <div style="padding: 24px 26px 28px; display: flex; flex-direction: column; gap: 14px; flex: 1">
-        <div style="display: flex; align-items: center; gap: 14px">
+      <div class="card-body" style="padding: 24px 26px 28px; display: flex; flex-direction: column; gap: 14px; flex: 1">
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px">
           <svg aria-hidden="true" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#e2b65a" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M8 20h8M12 16v4"/></svg>
-          <div style="flex: 1; min-width: 0">
+          <div class="card-title" style="flex: 1; min-width: 0">
             <h2 style="margin: 0; font-family: 'Playfair Display', serif; font-weight: 600; font-size: 27px; color: #f3ead6">Desktop</h2>
             <p style="margin: 0; font-size: 15px; color: #b9c4b3">{{t.desktopText}}</p>
           </div>
@@ -57,6 +69,15 @@ a{color:#f0cd7a}a:hover{color:#ffe3a3}
             <button class="seg" type="button" onClick="{{tab.pick}}" aria-pressed="{{tab.on}}" style="flex: 1; min-height: 44px; border: 0; border-radius: 9px; font: inherit; font-weight: 700; cursor: pointer; background: {{tab.bg}}; color: {{tab.fg}}">{{tab.label}}</button>
           </sc-for>
         </div>
+        <sc-if value="{{desktop.mac}}" hint-placeholder-val="{{ false }}">
+          <div role="note" style="display: flex; gap: 12px; padding: 14px 16px; border-radius: 12px; border: 1px solid rgba(245,185,113,0.6); background: rgba(245,185,113,0.09)">
+            <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f5b971" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex: none; margin-top: 2px"><path d="M12 3.5l9.5 16.5h-19z"/><path d="M12 10v4.5M12 17.5h.01"/></svg>
+            <div style="display: flex; flex-direction: column; gap: 2px">
+              <strong style="font-size: 15px; color: #f8cf9a">{{t.macTitle}}</strong>
+              <span style="font-size: 14px; color: #e9dcc6">{{t.macDesktop}}</span>
+            </div>
+          </div>
+        </sc-if>
         <a class="btn-gold" href="https://github.com/conectionist/romanian_whist_desktop/releases/latest" style="display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 52px; border-radius: 999px; background: linear-gradient(180deg, #f6da8f, #d4a347); color: #1d1a0e; font-weight: 700; font-size: 18px; text-decoration: none; box-shadow: 0 8px 22px rgba(212,163,71,0.25), inset 0 1px 0 rgba(255,255,255,0.55)">
           <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>{{desktop.button}}</a>
         <dl style="margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 4px 14px; font-size: 14px; color: #b9c4b3">
@@ -71,10 +92,10 @@ a{color:#f0cd7a}a:hover{color:#ffe3a3}
       <div style="aspect-ratio: 16 / 8; background: #161b22; border-bottom: 1px solid rgba(226,182,90,0.3); display: flex; align-items: center; justify-content: center; overflow: hidden">
         <img src="/_blob/3f467681c28adae453eb16a3b678915f" alt="{{t.terminalAlt}}" style="display: block; height: 100%; width: auto">
       </div>
-      <div style="padding: 24px 26px 28px; display: flex; flex-direction: column; gap: 14px; flex: 1">
-        <div style="display: flex; align-items: center; gap: 14px">
+      <div class="card-body" style="padding: 24px 26px 28px; display: flex; flex-direction: column; gap: 14px; flex: 1">
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px">
           <svg aria-hidden="true" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#e2b65a" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 9l3 3-3 3M12 15h5"/></svg>
-          <div style="flex: 1; min-width: 0">
+          <div class="card-title" style="flex: 1; min-width: 0">
             <h2 style="margin: 0; font-family: 'Playfair Display', serif; font-weight: 600; font-size: 27px; color: #f3ead6">Terminal</h2>
             <p style="margin: 0; font-size: 15px; color: #b9c4b3">{{t.terminalText}}</p>
           </div>
@@ -85,6 +106,15 @@ a{color:#f0cd7a}a:hover{color:#ffe3a3}
             <button class="seg" type="button" onClick="{{tab.pick}}" aria-pressed="{{tab.on}}" style="flex: 1; min-height: 44px; border: 0; border-radius: 9px; font: inherit; font-weight: 700; cursor: pointer; background: {{tab.bg}}; color: {{tab.fg}}">{{tab.label}}</button>
           </sc-for>
         </div>
+        <sc-if value="{{terminal.mac}}" hint-placeholder-val="{{ false }}">
+          <div role="note" style="display: flex; gap: 12px; padding: 14px 16px; border-radius: 12px; border: 1px solid rgba(245,185,113,0.6); background: rgba(245,185,113,0.09)">
+            <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f5b971" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex: none; margin-top: 2px"><path d="M12 3.5l9.5 16.5h-19z"/><path d="M12 10v4.5M12 17.5h.01"/></svg>
+            <div style="display: flex; flex-direction: column; gap: 2px">
+              <strong style="font-size: 15px; color: #f8cf9a">{{t.macTitle}}</strong>
+              <span style="font-size: 14px; color: #e9dcc6">{{t.macTerminal}}</span>
+            </div>
+          </div>
+        </sc-if>
         <a class="btn-gold" href="https://github.com/conectionist/romanian_whist_terminal/releases/latest" style="display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 52px; border-radius: 999px; background: linear-gradient(180deg, #f6da8f, #d4a347); color: #1d1a0e; font-weight: 700; font-size: 18px; text-decoration: none; box-shadow: 0 8px 22px rgba(212,163,71,0.25), inset 0 1px 0 rgba(255,255,255,0.55)">
           <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>{{terminal.button}}</a>
         <dl style="margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 4px 14px; font-size: 14px; color: #b9c4b3">
@@ -97,10 +127,10 @@ a{color:#f0cd7a}a:hover{color:#ffe3a3}
     <!-- Browser -->
     <li style="display: flex; flex-direction: column; border-radius: 18px; border: 1px solid rgba(226,182,90,0.42); background: linear-gradient(180deg, rgba(20,52,38,0.88), rgba(8,28,20,0.94)); box-shadow: 0 22px 44px rgba(0,0,0,0.35); overflow: hidden">
       <img src="/_blob/efcfb14f6213ebd7b8adc20ced7c1ad4" alt="{{t.browserAlt}}" style="display: block; width: 100%; aspect-ratio: 16 / 8; object-fit: cover; object-position: 60% 70%; border-bottom: 1px solid rgba(226,182,90,0.3)">
-      <div style="padding: 24px 26px 28px; display: flex; flex-direction: column; gap: 14px; flex: 1">
-        <div style="display: flex; align-items: center; gap: 14px">
+      <div class="card-body" style="padding: 24px 26px 28px; display: flex; flex-direction: column; gap: 14px; flex: 1">
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px">
           <svg aria-hidden="true" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#e2b65a" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9S9.5 5.7 12 3z"/></svg>
-          <div style="flex: 1; min-width: 0">
+          <div class="card-title" style="flex: 1; min-width: 0">
             <h2 style="margin: 0; font-family: 'Playfair Display', serif; font-weight: 600; font-size: 27px; color: #f3ead6">Browser</h2>
             <p style="margin: 0; font-size: 15px; color: #b9c4b3">{{t.browserText}}</p>
           </div>
@@ -120,10 +150,10 @@ a{color:#f0cd7a}a:hover{color:#ffe3a3}
           <img src="/_blob/8716d269b6b98a37a111bed649a70c12" alt="" style="width: 52px; transform: rotate(8deg) translateX(-8px)">
         </div>
       </div>
-      <div style="padding: 24px 26px 28px; display: flex; flex-direction: column; gap: 14px; flex: 1">
-        <div style="display: flex; align-items: center; gap: 14px">
+      <div class="card-body" style="padding: 24px 26px 28px; display: flex; flex-direction: column; gap: 14px; flex: 1">
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px">
           <svg aria-hidden="true" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#a9b5a6" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2.5" width="10" height="19" rx="2"/><path d="M11 18.5h2"/></svg>
-          <div style="flex: 1; min-width: 0">
+          <div class="card-title" style="flex: 1; min-width: 0">
             <h2 style="margin: 0; font-family: 'Playfair Display', serif; font-weight: 600; font-size: 27px; color: #e3dccb">Android</h2>
             <p style="margin: 0; font-size: 15px; color: #a9b5a6">{{t.androidText}}</p>
           </div>
@@ -137,7 +167,7 @@ a{color:#f0cd7a}a:hover{color:#ffe3a3}
   </ul>
 </section>
 
-<section aria-label="{{t.notesLabel}}" style="max-width: 1180px; margin: 0 auto; padding: 0 48px 40px; box-sizing: border-box; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px">
+<section class="stack-1" aria-label="{{t.notesLabel}}" style="max-width: 1180px; margin: 0 auto; padding: 0 48px 40px; box-sizing: border-box; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px">
   <div style="display: flex; gap: 14px; padding: 20px 22px; border-radius: 14px; border: 1px solid rgba(226,182,90,0.25); background: rgba(0,0,0,0.2)">
     <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#e2b65a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="flex: none"><path d="M12 3l8 3v6c0 4.5-3.4 8-8 9-4.6-1-8-4.5-8-9V6z"/><path d="M12 8v5M12 16h.01"/></svg>
     <p style="margin: 0; font-size: 15px; color: #c3cdbd">{{t.unsigned}}</p>
@@ -212,6 +242,10 @@ texts(lang) {
       olderA: 'Versiunile mai vechi și codul sursă sunt pe GitHub: ',
       olderDesktop: 'versiunile desktop', olderAnd: ' și ', olderTerminal: 'versiunile de terminal',
       mottoLabel: 'Motto', motto: 'Un singur joc. Oriunde.',
+      experimental: ' (experimental)',
+      macTitle: 'Experimental pe macOS',
+      macDesktop: 'Versiunea nu e semnată de Apple, așa că macOS refuză la început s-o deschidă: trebuie s-o permiți din Configurări sistem › Confidențialitate și securitate. Descarc-o doar dacă știi ce înseamnă asta.',
+      macTerminal: 'Versiunea nu e semnată de Apple, așa că macOS refuză la început s-o ruleze: trebuie s-o permiți din Configurări sistem › Confidențialitate și securitate. Descarc-o doar dacă știi ce înseamnă asta.',
       os: { windows: 'Windows', linux: 'Linux', macos: 'macOS' },
       desktopStart: {
         windows: 'Dezarhivează și rulează bin\\romanian_whist_desktop.exe.',
@@ -253,6 +287,10 @@ texts(lang) {
     olderA: 'Older versions and the source code are on GitHub: ',
     olderDesktop: 'desktop releases', olderAnd: ' and ', olderTerminal: 'terminal releases',
     mottoLabel: 'Motto', motto: 'One game. Everywhere.',
+    experimental: ' (experimental)',
+    macTitle: 'Experimental on macOS',
+    macDesktop: "This build isn't signed by Apple, so macOS refuses to open it at first: you have to allow it in System Settings › Privacy & Security. Download it only if you know what that means.",
+    macTerminal: "This build isn't signed by Apple, so macOS refuses to run it at first: you have to allow it in System Settings › Privacy & Security. Download it only if you know what that means.",
     os: { windows: 'Windows', linux: 'Linux', macos: 'macOS' },
     desktopStart: {
       windows: 'Unzip it and run bin\\romanian_whist_desktop.exe.',
@@ -293,8 +331,8 @@ return {
   lang,
   t,
   desktopShot: lang === 'ro' ? '/_blob/8d78c62d7bd7a818c8b4aa3101db7ff4' : '/_blob/86434ab992375239151268858f699c89',
-  desktop: { tabs: tabs(dOs, 'desktopOs'), button: t.downloadFor + t.os[dOs], file: desktopFiles[dOs], start: t.desktopStart[dOs] },
-  terminal: { tabs: tabs(tOs, 'terminalOs'), button: t.downloadFor + t.os[tOs], file: terminalFiles[tOs], start: t.terminalStart[tOs] },
+  desktop: { tabs: tabs(dOs, 'desktopOs'), mac: dOs === 'macos', button: t.downloadFor + t.os[dOs] + (dOs === 'macos' ? t.experimental : ''), file: desktopFiles[dOs], start: t.desktopStart[dOs] },
+  terminal: { tabs: tabs(tOs, 'terminalOs'), mac: tOs === 'macos', button: t.downloadFor + t.os[tOs] + (tOs === 'macos' ? t.experimental : ''), file: terminalFiles[tOs], start: t.terminalStart[tOs] },
   setLang: (l) => {
     try { window.localStorage.setItem('whist-site-lang', l); } catch (e) {}
     this.setState({ lang: l });

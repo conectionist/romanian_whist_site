@@ -16,6 +16,19 @@ a{color:#f0cd7a}a:hover{color:#ffe3a3}
 .nav-link:hover{color:#f0cd7a !important}
 .btn-gold:hover{filter:brightness(1.07)}
 .btn-line:hover{background:rgba(226,182,90,0.12) !important}
+@media (max-width: 880px){.nav-links{display:none !important}.menu-btn{display:inline-flex !important}}
+@media (min-width: 881px){.menu-panel{display:none !important}}
+@media (max-width: 600px){
+main > section, header, footer > div{padding-left:16px !important;padding-right:16px !important}
+.brand{gap:8px !important}.brand svg{width:28px;height:28px}.brand-name{font-size:20px !important}
+.nav{gap:6px !important}.menu-btn{padding:0 !important}.menu-label{display:none}
+.stack-1{grid-template-columns:minmax(0,1fr) !important}
+.feature{border-right:0 !important;border-bottom:1px solid rgba(226,182,90,0.25)}
+.feature:last-child{border-bottom:0}
+.fan{height:230px !important}
+.fan-inner{transform:scale(0.62);transform-origin:50% 100%}
+.hero{padding-top:44px !important}
+}
 </style>
 </helmet>
 <div class="felt" lang="{{lang}}" style="min-height: 100vh; color: #e9e1cd; font-family: 'Alegreya Sans', sans-serif; font-size: 17px; line-height: 1.5; overflow-x: hidden">
@@ -24,9 +37,9 @@ a{color:#f0cd7a}a:hover{color:#ffe3a3}
 
 <main>
 <!-- Hero -->
-<section aria-labelledby="hero-title" style="max-width: 1280px; margin: 0 auto; padding: 72px 48px 56px; box-sizing: border-box; display: flex; flex-wrap: wrap; align-items: center; gap: 40px">
+<section class="hero" aria-labelledby="hero-title" style="max-width: 1280px; margin: 0 auto; padding: 72px 48px 56px; box-sizing: border-box; display: flex; flex-wrap: wrap; align-items: center; gap: 40px">
   <div style="flex: 1 1 460px; min-width: 0; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 22px">
-    <h1 id="hero-title" style="margin: 0; font-family: 'Playfair Display', serif; font-weight: 700; font-size: clamp(60px, 7.4vw, 108px); line-height: 0.98; letter-spacing: -0.5px; background: linear-gradient(180deg, #f8e1a0 0%, #e2b65a 52%, #b98a33 100%); -webkit-background-clip: text; background-clip: text; color: transparent">Romanian<br>Whist</h1>
+    <h1 id="hero-title" style="margin: 0; font-family: 'Playfair Display', serif; font-weight: 700; font-size: clamp(60px, 7.4vw, 108px); line-height: 0.98; letter-spacing: -0.5px; background: linear-gradient(180deg, #f8e1a0 0%, #e2b65a 52%, #b98a33 100%); -webkit-background-clip: text; background-clip: text; color: transparent"><sc-if value="{{isEn}}" hint-placeholder-val="{{ true }}">Romanian<br>Whist</sc-if><sc-if value="{{isRo}}" hint-placeholder-val="{{ false }}">Whist</sc-if></h1>
     <div aria-hidden="true" style="display: flex; align-items: center; gap: 10px; color: #e2b65a">
       <span style="width: 110px; height: 1px; background: linear-gradient(90deg, rgba(226,182,90,0), #e2b65a)"></span>
       <span style="width: 6px; height: 6px; transform: rotate(45deg); border: 1px solid #e2b65a"></span>
@@ -50,35 +63,37 @@ a{color:#f0cd7a}a:hover{color:#ffe3a3}
     </ul>
   </div>
 
-  <div aria-hidden="true" style="flex: 1 1 520px; min-width: 0; position: relative; height: 500px">
+  <div class="fan" aria-hidden="true" style="flex: 1 1 520px; min-width: 0; position: relative; height: 500px">
+    <div class="fan-inner" style="position: absolute; left: 0; right: 0; bottom: 0; height: 500px">
     <div style="position: absolute; left: 50%; top: 52%; width: 560px; height: 380px; transform: translate(-50%, -50%); border-radius: 50%; background: radial-gradient(ellipse at center, rgba(244,214,140,0.22), rgba(244,214,140,0) 65%)"></div>
     <img src="/_blob/3877a4a277478f0970d7797e6c6d7dde" alt="" style="position: absolute; left: 50%; bottom: 40px; width: 200px; margin-left: -100px; transform-origin: 50% 115%; transform: translateX(-40px) rotate(-30deg); filter: drop-shadow(0 16px 22px rgba(0,0,0,0.5))">
     <img src="/_blob/d12ca5b49ebef964360b0c042ca9d1b6" alt="" style="position: absolute; left: 50%; bottom: 40px; width: 200px; margin-left: -100px; transform-origin: 50% 115%; transform: translateX(-20px) rotate(-15deg); filter: drop-shadow(0 16px 22px rgba(0,0,0,0.5))">
     <img src="/_blob/f8a3b7b34ee4b1d342d6b0c30391fcfe" alt="" style="position: absolute; left: 50%; bottom: 40px; width: 200px; margin-left: -100px; transform-origin: 50% 115%; transform: rotate(0deg); filter: drop-shadow(0 16px 22px rgba(0,0,0,0.5))">
     <img src="/_blob/82a550e73fba00de34033cf2816bf497" alt="" style="position: absolute; left: 50%; bottom: 40px; width: 200px; margin-left: -100px; transform-origin: 50% 115%; transform: translateX(20px) rotate(15deg); filter: drop-shadow(0 16px 22px rgba(0,0,0,0.5))">
     <img src="/_blob/424bee0af8d303c31b2ae134a90a8b97" alt="" style="position: absolute; left: 50%; bottom: 40px; width: 200px; margin-left: -100px; transform-origin: 50% 115%; transform: translateX(40px) rotate(30deg); filter: drop-shadow(0 16px 22px rgba(0,0,0,0.5))">
+    </div>
   </div>
 </section>
 
 <!-- Features -->
 <section aria-label="{{t.featuresLabel}}" style="max-width: 1180px; margin: 0 auto; padding: 8px 48px 64px; box-sizing: border-box">
   <ul style="list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px 0">
-    <li style="display: flex; flex-direction: column; align-items: center; text-align: center; gap: 6px; padding: 8px 24px; border-right: 1px solid rgba(226,182,90,0.35)">
+    <li class="feature" style="display: flex; flex-direction: column; align-items: center; text-align: center; gap: 6px; padding: 8px 24px; border-right: 1px solid rgba(226,182,90,0.35)">
       <svg aria-hidden="true" width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="#e2b65a" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3 19c0-3.3 2.7-5.5 6-5.5s6 2.2 6 5.5"/><circle cx="17" cy="9" r="2.5"/><path d="M16 13.6c2.8.2 5 2 5 4.9"/></svg>
       <h2 style="margin: 4px 0 0; font-family: 'Playfair Display', serif; font-weight: 600; font-size: 21px; color: #f3ead6">{{t.f1Title}}</h2>
       <p style="margin: 0; font-size: 15px; color: #b9c4b3">{{t.f1Text}}</p>
     </li>
-    <li style="display: flex; flex-direction: column; align-items: center; text-align: center; gap: 6px; padding: 8px 24px; border-right: 1px solid rgba(226,182,90,0.35)">
+    <li class="feature" style="display: flex; flex-direction: column; align-items: center; text-align: center; gap: 6px; padding: 8px 24px; border-right: 1px solid rgba(226,182,90,0.35)">
       <svg aria-hidden="true" width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="#e2b65a" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="6" width="12" height="12" rx="2"/><rect x="9.5" y="9.5" width="5" height="5"/><path d="M9 3v3M15 3v3M9 18v3M15 18v3M3 9h3M3 15h3M18 9h3M18 15h3"/></svg>
       <h2 style="margin: 4px 0 0; font-family: 'Playfair Display', serif; font-weight: 600; font-size: 21px; color: #f3ead6">{{t.f2Title}}</h2>
       <p style="margin: 0; font-size: 15px; color: #b9c4b3">{{t.f2Text}}</p>
     </li>
-    <li style="display: flex; flex-direction: column; align-items: center; text-align: center; gap: 6px; padding: 8px 24px; border-right: 1px solid rgba(226,182,90,0.35)">
+    <li class="feature" style="display: flex; flex-direction: column; align-items: center; text-align: center; gap: 6px; padding: 8px 24px; border-right: 1px solid rgba(226,182,90,0.35)">
       <svg aria-hidden="true" width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="#e2b65a" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18"/><path d="M12 7v5l3.5 2"/></svg>
       <h2 style="margin: 4px 0 0; font-family: 'Playfair Display', serif; font-weight: 600; font-size: 21px; color: #f3ead6">1-8-1 / 8-1-8</h2>
       <p style="margin: 0; font-size: 15px; color: #b9c4b3">{{t.f3Text}}</p>
     </li>
-    <li style="display: flex; flex-direction: column; align-items: center; text-align: center; gap: 6px; padding: 8px 24px">
+    <li class="feature" style="display: flex; flex-direction: column; align-items: center; text-align: center; gap: 6px; padding: 8px 24px">
       <svg aria-hidden="true" width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="#e2b65a" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h9M8.5 4v2M6 6c.8 3 3 5.5 6 7M11 6c-.8 3.2-3 6-6.5 7.5"/><path d="M13 20l4-9 4 9M14.5 17h5"/></svg>
       <h2 style="margin: 4px 0 0; font-family: 'Playfair Display', serif; font-weight: 600; font-size: 21px; color: #f3ead6">{{t.f4Title}}</h2>
       <p style="margin: 0; font-size: 15px; color: #b9c4b3">{{t.f4Text}}</p>
@@ -208,6 +223,8 @@ renderVals() {
 const lang = (this.state && this.state.lang) || 'en';
 return {
   lang,
+  isEn: lang === 'en',
+  isRo: lang === 'ro',
   t: this.texts(lang),
   shot: lang === 'ro' ? '/_blob/8d78c62d7bd7a818c8b4aa3101db7ff4' : '/_blob/0584fa1fb82249fb3a28a9d6769bffd3',
   setLang: (l) => {
