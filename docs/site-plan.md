@@ -696,15 +696,14 @@ than a time zone. It is looked up on the server, in a local country database, wi
   or **MaxMind GeoLite2**, with a free key. Which one is a phase 8 question, and DB-IP's credit goes
   in About's credits if it is used.
 
-Where the decision is made is a phase 8 question too, with two ways:
+Where the decision is made had two ways; the owner chose the second (D23):
 
 - **Caddy decides on the first request** and redirects. It needs a `lang` cookie for the visitor's
-  own pick, which is a preference they asked for, so no consent banner is needed; the owner confirms
-  that in phase 8. Caddyfile rules would have to skip crawlers by user agent.
+  own pick, and Caddyfile rules would have to skip crawlers by user agent. Not chosen.
 - **Caddy answers a same-origin `/country` endpoint,** `ro` or `en`, which the same script asks
   first, falling back to the time zone when the answer is late or missing.
 
-**Recommended: the `/country` endpoint.** The decision stays in one place, with one set of rules and
+**The `/country` endpoint, decided by the owner, 2026-11-26.** The decision stays in one place, with one set of rules and
 one set of tests, whether the answer comes from the IP address or the time zone. The pages stay the
 same bytes for everyone, so a crawler never sees one page for some visitors and a redirect for
 others, and caching is untouched. No cookie is needed, so D11 holds as written: the pick stays in
@@ -1360,6 +1359,8 @@ Its outcome is written here after the review and the merge, as for every phase
 - **Work:** [§6.5](#65-about): the game, the rules and scoring, the opponents, the five
   repositories, the credits (the Android robot's included); the facts checked against their sources
   and the check written in the outcome; the phone layout; tests.
+- **Ask the owner** whether the Android robot's credit, Google's English wording, is translated on
+  the Romanian page or kept in English ([§6.5](#65-about)).
 - **Done when:** `compare-en-about`, `compare-ro-about` and their `-phone` are linked; every fact
   has its source named in the outcome; the owner approves.
 
@@ -1401,10 +1402,8 @@ Its outcome is written here after the review and the merge, as for every phase
     ([§14.2](#142-versions-tags-and-the-changelog));
   - **the language by IP address** ([§7.3](#73-picking-the-language-by-location)): the Caddy build
     with a GeoIP module, the country database (DB-IP Lite Country or MaxMind GeoLite2, the owner
-    choosing) and its monthly refresh, the way the decision is made (the recommended `/country`
-    endpoint, or Caddy's own redirect with a `lang` cookie, which the owner confirms needs no
-    consent banner), the time zone staying as the fallback, DB-IP's credit in About if it is used,
-    and the tests for it;
+    choosing) and its monthly refresh, the `/country` endpoint the script asks (D23), the time zone
+    staying as the fallback, DB-IP's credit in About if it is used, and the tests for it;
   - the daily refresh of the release data there;
   - **GitHub Pages stays on, serving a redirect-only build** ([§14.4](#144-hosting)): each page a
     `<meta http-equiv="refresh">` and a canonical link to its new address;
@@ -1482,7 +1481,7 @@ The plan assumes each default until the owner decides otherwise.
 | D20 | Versions? | **Decided by the owner, 2026-11-26:** the latest of everything, unless there is a good reason, written down ([§3.1](#31-always-the-latest-versions)) |
 | D21 | The feature branch's name? | `site/v1` |
 | D22 | How does each phase run? | **Decided by the owner, 2026-11-26:** [§15.2](#152-how-each-phase-runs) |
-| D23 | On the VPS, how is the country known, and where is the language decided? | Phase 8 decides. Recommended: a same-origin `/country` endpoint from Caddy with a GeoIP module, asked by the same script, so there is no cookie and one set of rules; the alternative is Caddy's own redirect with a `lang` cookie. The database is DB-IP Lite Country (CC BY 4.0, no key) or MaxMind GeoLite2 (a free key) ([§7.3](#73-picking-the-language-by-location)) |
+| D23 | On the VPS, how is the country known, and where is the language decided? | **Decided by the owner, 2026-11-26:** a same-origin `/country` endpoint from Caddy with a GeoIP module, asked by the same script, so there is no cookie and one set of rules. Phase 8 picks the database: DB-IP Lite Country (CC BY 4.0, no key) or MaxMind GeoLite2 (a free key) ([§7.3](#73-picking-the-language-by-location)) |
 
 ---
 
