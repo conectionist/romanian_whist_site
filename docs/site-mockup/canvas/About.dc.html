@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Romanian Whist: about</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Alegreya+Sans:wght@400;500;700&amp;family=Cormorant+Garamond:ital,wght@1,500;1,600&amp;family=Playfair+Display:wght@600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0b2a1e}
+a{color:#f0cd7a}a:hover{color:#ffe3a3}
+.felt{background-color:#0b2a1e;background-image:radial-gradient(ellipse 70% 55% at 50% 8%,rgba(46,120,78,0.5),rgba(11,42,30,0) 70%),linear-gradient(180deg,rgba(6,24,17,0.25),rgba(5,20,14,0.9)),url(/_blob/1b8aca3e600c0f6ec6884ab51b63e2db);background-size:auto,auto,420px}
+.nav-link:hover{color:#f0cd7a !important}
+.repo:hover{border-color:rgba(226,182,90,0.8) !important}
+.toc:hover{background:rgba(226,182,90,0.12) !important}
+@media (max-width: 880px){.nav-links{display:none !important}.menu-btn{display:inline-flex !important}}
+@media (min-width: 881px){.menu-panel{display:none !important}}
+@media (max-width: 600px){
+main > section, header, footer > div{padding-left:16px !important;padding-right:16px !important}
+.brand{gap:8px !important}.brand svg{width:28px;height:28px}.brand-name{font-size:20px !important}
+.nav{gap:6px !important}.menu-btn{padding:0 !important}.menu-label{display:none}
+.stack-1{grid-template-columns:minmax(0,1fr) !important}
+.page-top{padding-top:44px !important}
+}
+</style>
+</helmet>
+<div class="felt" lang="{{lang}}" style="min-height: 100vh; color: #e9e1cd; font-family: 'Alegreya Sans', sans-serif; font-size: 17px; line-height: 1.55; overflow-x: hidden">
+
+<dc-import name="Header" active="about" lang="{{lang}}" on-lang="{{setLang}}" hint-size="100%,76px"></dc-import>
+
+<main>
+<section class="page-top" aria-labelledby="about-title" style="max-width: 1180px; margin: 0 auto; padding: 72px 48px 24px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 14px">
+  <h1 id="about-title" style="margin: 0; font-family: 'Playfair Display', serif; font-weight: 700; font-size: clamp(48px, 6vw, 76px); line-height: 1.05; background: linear-gradient(180deg, #f8e1a0 0%, #e2b65a 55%, #b98a33 100%); -webkit-background-clip: text; background-clip: text; color: transparent">{{t.title}}</h1>
+  <p style="margin: 0; max-width: 760px; font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 500; font-size: 30px; line-height: 1.25; color: #efe4c8">{{t.subtitle}}</p>
+  <nav aria-label="{{t.tocLabel}}" style="margin-top: 18px; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px">
+    <a class="toc" href="#game" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 18px; border-radius: 999px; border: 1px solid rgba(226,182,90,0.4); color: #e9e1cd; text-decoration: none">{{t.gameTitle}}</a>
+    <a class="toc" href="#rules" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 18px; border-radius: 999px; border: 1px solid rgba(226,182,90,0.4); color: #e9e1cd; text-decoration: none">{{t.rulesTitle}}</a>
+    <a class="toc" href="#opponents" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 18px; border-radius: 999px; border: 1px solid rgba(226,182,90,0.4); color: #e9e1cd; text-decoration: none">{{t.oppToc}}</a>
+    <a class="toc" href="#source" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 18px; border-radius: 999px; border: 1px solid rgba(226,182,90,0.4); color: #e9e1cd; text-decoration: none">{{t.srcTitle}}</a>
+  </nav>
+</section>
+
+<!-- The game -->
+<section id="game" aria-labelledby="game-title" style="max-width: 1180px; margin: 0 auto; padding: 48px 48px; box-sizing: border-box; display: flex; flex-wrap: wrap; align-items: center; gap: 40px">
+  <div style="flex: 1 1 400px; min-width: 0; display: flex; flex-direction: column; gap: 16px">
+    <h2 id="game-title" style="margin: 0; font-family: 'Playfair Display', serif; font-weight: 700; font-size: 38px; color: #f3ead6">{{t.gameTitle}}</h2>
+    <p style="margin: 0; color: #c3cdbd">{{t.game1}}</p>
+    <p style="margin: 0; color: #c3cdbd">{{t.game2}}</p>
+    <p style="margin: 0; color: #c3cdbd">{{t.game3}}</p>
+  </div>
+  <figure style="flex: 1 1 480px; min-width: 0; margin: 0; padding: 8px; border-radius: 16px; border: 1px solid rgba(226,182,90,0.45); background: rgba(8,28,20,0.9); box-shadow: 0 22px 44px rgba(0,0,0,0.4)">
+    <img src="/_blob/355d4bb7f1f47a645cd4fbfc89c62736" alt="{{t.foreheadAlt}}" style="display: block; width: 100%; height: auto; border-radius: 10px">
+    <figcaption style="padding: 10px 6px 2px; font-size: 14px; color: #a9b5a6">{{t.foreheadCaption}}</figcaption>
+  </figure>
+</section>
+
+<!-- Rules -->
+<section id="rules" aria-labelledby="rules-title" style="max-width: 1180px; margin: 0 auto; padding: 48px 48px; box-sizing: border-box; display: flex; flex-direction: column; gap: 26px">
+  <h2 id="rules-title" style="margin: 0; font-family: 'Playfair Display', serif; font-weight: 700; font-size: 38px; color: #f3ead6">{{t.rulesTitle}}</h2>
+  <div style="display: flex; flex-wrap: wrap; gap: 24px">
+    <div style="flex: 1.3 1 420px; min-width: 0; display: flex; flex-direction: column; gap: 18px">
+      <div style="display: flex; gap: 16px">
+        <span style="flex: none; width: 40px; height: 40px; border-radius: 50%; border: 1px solid #e2b65a; display: flex; align-items: center; justify-content: center; font-family: 'Playfair Display', serif; font-size: 20px; color: #e2b65a">1</span>
+        <div><h3 style="margin: 0 0 4px; font-size: 19px; color: #f3ead6">{{t.r1Title}}</h3><p style="margin: 0; color: #c3cdbd">{{t.r1Text}}</p></div>
+      </div>
+      <div style="display: flex; gap: 16px">
+        <span style="flex: none; width: 40px; height: 40px; border-radius: 50%; border: 1px solid #e2b65a; display: flex; align-items: center; justify-content: center; font-family: 'Playfair Display', serif; font-size: 20px; color: #e2b65a">2</span>
+        <div><h3 style="margin: 0 0 4px; font-size: 19px; color: #f3ead6">{{t.r2Title}}</h3><p style="margin: 0; color: #c3cdbd">{{t.r2Text}}</p></div>
+      </div>
+      <div style="display: flex; gap: 16px">
+        <span style="flex: none; width: 40px; height: 40px; border-radius: 50%; border: 1px solid #e2b65a; display: flex; align-items: center; justify-content: center; font-family: 'Playfair Display', serif; font-size: 20px; color: #e2b65a">3</span>
+        <div><h3 style="margin: 0 0 4px; font-size: 19px; color: #f3ead6">{{t.r3Title}}</h3><p style="margin: 0; color: #c3cdbd">{{t.r3Text}}</p></div>
+      </div>
+    </div>
+    <div style="flex: 1 1 340px; min-width: 0; padding: 22px 24px; border-radius: 16px; border: 1px solid rgba(226,182,90,0.42); background: linear-gradient(180deg, rgba(20,52,38,0.88), rgba(8,28,20,0.94))">
+      <table style="width: 100%; border-collapse: collapse; font-size: 16px">
+        <caption style="text-align: left; padding-bottom: 10px; font-size: 13px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: #e2b65a">{{t.scoreCaption}}</caption>
+        <tbody>
+          <tr style="border-bottom: 1px solid rgba(226,182,90,0.2)"><th scope="row" style="text-align: left; font-weight: 400; padding: 10px 0; color: #e9e1cd">{{t.sc1}}</th><td style="text-align: right; padding: 10px 0; color: #9fdcb3; font-weight: 700">{{t.sc1v}}</td></tr>
+          <tr style="border-bottom: 1px solid rgba(226,182,90,0.2)"><th scope="row" style="text-align: left; font-weight: 400; padding: 10px 0; color: #e9e1cd">{{t.sc2}}</th><td style="text-align: right; padding: 10px 0; color: #f2a58e; font-weight: 700">{{t.sc2v}}</td></tr>
+          <tr style="border-bottom: 1px solid rgba(226,182,90,0.2)"><th scope="row" style="text-align: left; font-weight: 400; padding: 10px 0; color: #e9e1cd">{{t.sc3}}</th><td style="text-align: right; padding: 10px 0; color: #9fdcb3; font-weight: 700">{{t.sc3v}}</td></tr>
+          <tr><th scope="row" style="text-align: left; font-weight: 400; padding: 10px 0; color: #e9e1cd">{{t.sc4}}</th><td style="text-align: right; padding: 10px 0; color: #f2a58e; font-weight: 700">−10</td></tr>
+        </tbody>
+      </table>
+      <p style="margin: 12px 0 0; font-size: 14px; color: #a9b5a6">{{t.scoreNote}}</p>
+    </div>
+  </div>
+  <p style="margin: 0; font-size: 15px; color: #a9b5a6">{{t.detailA}}<a href="https://github.com/conectionist/romanian_whist_engine/blob/master/docs/RULES.md">{{t.detailLink}}</a>{{t.detailB}}</p>
+</section>
+
+<!-- Opponents -->
+<section id="opponents" aria-labelledby="opp-title" style="max-width: 1180px; margin: 0 auto; padding: 48px 48px; box-sizing: border-box; display: flex; flex-direction: column; gap: 22px">
+  <div style="display: flex; flex-direction: column; gap: 6px">
+    <h2 id="opp-title" style="margin: 0; font-family: 'Playfair Display', serif; font-weight: 700; font-size: 38px; color: #f3ead6">{{t.oppTitle}}</h2>
+    <p style="margin: 0; color: #c3cdbd">{{t.oppSub}}</p>
+  </div>
+  <div style="overflow-x: auto; border-radius: 16px; border: 1px solid rgba(226,182,90,0.42); background: linear-gradient(180deg, rgba(20,52,38,0.88), rgba(8,28,20,0.94))">
+    <table style="width: 100%; min-width: 620px; border-collapse: collapse; font-size: 16px">
+      <thead>
+        <tr style="border-bottom: 1px solid rgba(226,182,90,0.4)">
+          <th scope="col" style="text-align: left; padding: 14px 22px; font-size: 13px; letter-spacing: 2.5px; text-transform: uppercase; color: #e2b65a; width: 240px">{{t.oppCol}}</th>
+          <th scope="col" style="text-align: left; padding: 14px 22px; font-size: 13px; letter-spacing: 2.5px; text-transform: uppercase; color: #e2b65a">{{t.howCol}}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <sc-for list="{{opponents}}" as="o" hint-placeholder-count="7">
+          <tr style="border-bottom: 1px solid {{o.line}}"><th scope="row" style="text-align: left; padding: 12px 22px; color: #f3ead6">{{o.name}}</th><td style="padding: 12px 22px; color: #c3cdbd">{{o.how}}</td></tr>
+        </sc-for>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- Open source -->
+<section id="source" aria-labelledby="src-title" style="max-width: 1180px; margin: 0 auto; padding: 48px 48px 88px; box-sizing: border-box; display: flex; flex-direction: column; gap: 22px">
+  <div style="display: flex; flex-direction: column; gap: 6px">
+    <h2 id="src-title" style="margin: 0; font-family: 'Playfair Display', serif; font-weight: 700; font-size: 38px; color: #f3ead6">{{t.srcTitle}}</h2>
+    <p style="margin: 0; max-width: 760px; color: #c3cdbd">{{t.srcSub}}</p>
+  </div>
+  <ul class="stack-1" style="list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 18px">
+    <sc-for list="{{repos}}" as="r" hint-placeholder-count="6">
+      <li><a class="repo" href="{{r.url}}" style="display: flex; flex-direction: column; gap: 6px; height: 100%; box-sizing: border-box; padding: 20px 22px; border-radius: 14px; border: 1px {{r.borderStyle}} {{r.border}}; background: rgba(0,0,0,0.22); color: #e9e1cd; text-decoration: none">
+        <span style="display: flex; justify-content: space-between; gap: 10px"><strong style="font-size: 19px; color: #f3ead6">{{r.name}}</strong><span style="font-size: 13px; color: #a9b5a6">{{r.licence}}</span></span>
+        <span style="font-size: 15px; color: {{r.textColor}}">{{r.text}}</span>
+        <span style="font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 13px; color: #f0cd7a">{{r.repo}}</span></a></li>
+    </sc-for>
+  </ul>
+</section>
+</main>
+
+<dc-import name="Footer" lang="{{lang}}" hint-size="100%,300px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":3300}}'>
+class Component extends DCLogic {
+componentDidMount() {
+  this.onStorage = () => this.setState({ lang: this.readLang() });
+  this.setState({ lang: this.readLang() });
+  try { window.addEventListener('storage', this.onStorage); } catch (e) {}
+}
+componentWillUnmount() {
+  try { window.removeEventListener('storage', this.onStorage); } catch (e) {}
+}
+readLang() {
+  try { return window.localStorage.getItem('whist-site-lang') === 'en' ? 'en' : 'ro'; } catch (e) { return 'ro'; }
+}
+texts(lang) {
+  if (lang === 'ro') {
+    return {
+      title: 'Despre joc',
+      subtitle: 'Spune câte mâini faci. Apoi fă exact atâtea.',
+      tocLabel: 'Pe această pagină',
+      gameTitle: 'Jocul',
+      game1: 'Whist e un joc de cărți pentru 2 până la 6 jucători. În fiecare rundă, fiecare jucător licitează câte mâini va face, iar totul e să nimerească exact.',
+      game2: 'Un joc merge 1-8-1, de la o carte până la opt și înapoi, sau 8-1-8, invers. La Fruntea vezi cartea fiecăruia, în afară de a ta. La Neveul nimeni nu vede nimic înainte de licitație.',
+      game3: 'Regulile sunt aplicate pentru tine: cărțile pe care nu le poți juca sunt estompate, iar licitația pe care ultimul nu o poate face nu e disponibilă.',
+      foreheadAlt: 'Fruntea în aplicația desktop: se vede cartea fiecăruia, în afară de a ta',
+      foreheadCaption: 'Fruntea: vezi cartea fiecăruia, în afară de a ta.',
+      rulesTitle: 'Reguli și punctaj',
+      r1Title: 'Împărțirea', r1Text: 'Fiecare jucător primește același număr de cărți, iar următoarea carte din pachet se întoarce ca atu. Rundele de 8 cărți nu au atu.',
+      r2Title: 'Licitația', r2Text: 'Fiecare licitează câte mâini va face. Ultimul nu poate licita astfel încât totalul să fie egal cu numărul de mâini, așa că cineva va greși sigur.',
+      r3Title: 'Jocul', r3Text: 'Pui din culoarea de jos dacă poți. Dacă nu poți, trebuie să pui atu, dacă ai. Cel mai mare atu câștigă mâna, sau cea mai mare carte din culoarea de jos, dacă nu s-a pus atu.',
+      scoreCaption: 'La sfârșitul unei runde',
+      sc1: 'Ai făcut exact cât ai licitat', sc1v: '5 + licitația',
+      sc2: 'Ai greșit', sc2v: 'minus diferența',
+      sc3: 'A 5-a licitație exactă la rând', sc3v: '+10 bonus',
+      sc4: 'A 5-a greșeală la rând',
+      scoreNote: 'Rundele de o carte nu se numără la serii. Câștigă cel cu cel mai mare total la sfârșitul jocului.',
+      detailA: 'Toate detaliile, inclusiv ordinea rundelor, sunt în ', detailLink: 'regulamentul motorului de joc', detailB: ' (în engleză).',
+      oppToc: 'Roboții',
+      oppTitle: 'Nouă roboți',
+      oppSub: 'Fiecare loc poate avea alt robot. Alege o masă blândă sau una care numără fiecare carte.',
+      oppCol: 'Robot', howCol: 'Cum joacă',
+      srcTitle: 'Cod sursă deschis',
+      srcSub: 'Un singur motor de joc în C++20 conține toate regulile și toți roboții. Fiecare versiune a jocului se bazează pe el, așa că toate joacă exact același joc.'
+    };
+  }
+  return {
+    title: 'About the game',
+    subtitle: 'Say how many tricks you will take. Then take exactly that many.',
+    tocLabel: 'On this page',
+    gameTitle: 'The game',
+    game1: 'Romanian Whist is a trick-taking card game for 2 to 6 players. Every round, each player bids how many tricks they will take, and the whole point is to be exactly right.',
+    game2: "A game runs 1-8-1, one card up to eight and back down, or 8-1-8, the other way round. In a forehead round you see everyone's card but your own. In a hidden round nobody sees anything before bidding.",
+    game3: 'The rules are enforced for you: cards you may not play are greyed out, and the one bid the last bidder may not make is unavailable.',
+    foreheadAlt: "A forehead round in the desktop client: everyone's card is shown but your own",
+    foreheadCaption: "A forehead round: you see everyone's card but your own.",
+    rulesTitle: 'Rules and scoring',
+    r1Title: 'The deal', r1Text: 'Every player is dealt the same number of cards, and the next card off the deck is turned up as trump. Rounds of eight cards have no trump.',
+    r2Title: 'The bidding', r2Text: 'Everyone bids how many tricks they will take. The last bidder may not make the bids add up to the number of tricks, so somebody is always going to be wrong.',
+    r3Title: 'The play', r3Text: "Follow the suit that was led if you can. If you can't, you must play a trump if you have one. The highest trump wins the trick, or the highest card of the suit led if no trump was played.",
+    scoreCaption: 'At the end of a round',
+    sc1: 'You took exactly what you bid', sc1v: '5 + your bid',
+    sc2: 'You missed', sc2v: 'minus the difference',
+    sc3: '5th exact bid in a row', sc3v: '+10 bonus',
+    sc4: '5th miss in a row',
+    scoreNote: "One-card rounds don't count towards streaks. The highest total at the end of the game wins.",
+    detailA: "Every detail, including the round schedules, is in the engine's ", detailLink: 'rules document', detailB: '.',
+    oppToc: 'Computer players',
+    oppTitle: 'Nine computer players',
+    oppSub: 'Each seat can play a different one. Pick a gentle table, or one that counts every card.',
+    oppCol: 'Computer player', howCol: 'How it plays',
+    srcTitle: 'Open source',
+    srcSub: 'One C++20 engine holds every rule and every computer player. Each version of the game is a client of it, so they all play exactly the same game.'
+  };
+}
+renderVals() {
+const lang = (this.state && this.state.lang) || 'ro';
+const t = this.texts(lang);
+const opp = [
+  { en: ['Random', 'Bids a random legal number and plays a random legal card.'],
+    ro: ['Aleatoriu', 'Licitează la întâmplare un număr permis și joacă la întâmplare o carte permisă.'] },
+  { en: ['First card', 'Bids 0 (or 1 when 0 is barred) and plays the first legal card in its hand.'],
+    ro: ['Prima carte', 'Licitează 0, sau 1 când 0 e interzis, și joacă prima carte permisă pe care o are.'] },
+  { en: ['Low risk', 'Bids the tricks its hand will take anyway, then wins them cheaply.'],
+    ro: ['Risc mic', 'Licitează mâinile pe care cărțile lui le fac oricum, apoi le câștigă ieftin.'] },
+  { en: ['Ducking', "Bids 0 no matter what, and gets rid of its high cards whenever they can't win."],
+    ro: ['Eschivă', 'Licitează 0 orice ar fi și scapă de cărțile mari ori de câte ori nu pot câștiga.'] },
+  { en: ['Cyborg', 'Works out exact odds for every card, bids the count with the best expected score, and re-plans every trick.'],
+    ro: ['Cyborg', 'Calculează șansele exacte ale fiecărei cărți, licitează numărul cu cel mai bun scor așteptat și își reface planul la fiecare mână.'] },
+  { en: ['Reckoner Alpha', 'Imagines no deals and plays by rule, but sometimes plays a random card.'],
+    ro: ['Socotitor Alfa', 'Nu își imaginează împărțiri și joacă după reguli, dar uneori joacă o carte la întâmplare.'] },
+  { en: ['Reckoner Beta, Gamma, Delta', 'Imagine possible deals before each card and play what does best across them. Beta sometimes plays at random; Gamma and Delta never do.'],
+    ro: ['Socotitor Beta, Gama, Delta', 'Își imaginează împărțiri posibile înaintea fiecărei cărți și joacă ce iese cel mai bine în ele. Beta joacă uneori la întâmplare; Gama și Delta niciodată.'] }
+];
+const repos = [
+  { repo: 'romanian_whist_engine', licence: 'AGPL-3.0', en: ['Engine', 'The rules, the scoring and the computer players. No user interface.'], ro: ['Motorul de joc', 'Regulile, punctajul și roboții. Fără interfață.'] },
+  { repo: 'romanian_whist_desktop', licence: 'GPL-3.0', en: ['Desktop', 'The desktop app for Windows, Linux and macOS.'], ro: ['Desktop', 'Aplicația desktop pentru Windows, Linux și macOS.'] },
+  { repo: 'romanian_whist_terminal', licence: 'GPL-3.0', en: ['Terminal', 'The game in a terminal, played from the keyboard.'], ro: ['Terminal', 'Jocul în terminal, jucat de la tastatură.'] },
+  { repo: 'romanian_whist_server', licence: 'AGPL-3.0', en: ['Server', 'Runs the online tables and solo games for the browser client.'], ro: ['Server', 'Găzduiește mesele online și jocurile solo pentru pagina web.'] },
+  { repo: 'romanian_whist_web', licence: 'AGPL-3.0', en: ['Browser', "The page you play online in, in the desktop app's look."], ro: ['Browser', 'Pagina în care joci online, în stilul aplicației desktop.'] }
+];
+return {
+  lang,
+  t,
+  opponents: opp.map((o, i) => ({
+    name: o[lang][0],
+    how: o[lang][1],
+    line: i === opp.length - 1 ? 'transparent' : 'rgba(226,182,90,0.15)'
+  })),
+  repos: repos.map((r) => ({
+    repo: r.repo,
+    url: 'https://github.com/conectionist/' + r.repo,
+    name: r[lang][0],
+    text: r[lang][1],
+    licence: r.licence,
+    border: 'rgba(226,182,90,0.35)',
+    borderStyle: 'solid',
+    textColor: '#c3cdbd'
+  })),
+  setLang: (l) => {
+    try { window.localStorage.setItem('whist-site-lang', l); } catch (e) {}
+    this.setState({ lang: l });
+  }
+};
+}
+}
+</script>
+</body>
+</html>
