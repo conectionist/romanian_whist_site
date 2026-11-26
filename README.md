@@ -3,7 +3,8 @@
 The website of [Romanian Whist](https://en.wikipedia.org/wiki/Romanian_whist), the trick-taking
 card game where you say exactly how many tricks you will take, then take exactly that many. It
 introduces the game and sends people to it: to play online, to download a client, to see it and to
-learn the rules. It has four pages, Home, Downloads, Screenshots and About, in English and Romanian.
+learn the rules. It has four pages, Home, Downloads, Screenshots and About, in Romanian, the
+default, and English. A visitor from outside Romania and Moldova is sent to the English pages.
 
 ![The home page, from the mock-up](docs/site-mockup/screenshots/en-home.jpg)
 
@@ -19,7 +20,8 @@ and phones alike. It runs in Docker, as Caddy serving the built pages, with Dock
 published on GitHub Pages until it moves to its own server. Building and running it are described
 here once phase 1 has set it up.
 
-The game is called Romanian Whist in English and Whist in Romanian.
+The game is called Romanian Whist in English and Whist in Romanian. The site's Romanian pages are at
+the root (`/downloads/`) and its English pages under `/en/` (`/en/downloads/`).
 
 ## The game
 
@@ -32,7 +34,6 @@ Each client is its own repository, and all of them are built on one engine:
 | [`romanian_whist_terminal`](https://github.com/conectionist/romanian_whist_terminal) | The terminal client |
 | [`romanian_whist_server`](https://github.com/conectionist/romanian_whist_server) | The game server for online tables |
 | [`romanian_whist_web`](https://github.com/conectionist/romanian_whist_web) | The browser client, played at <https://whist.akdscloud.eu> |
-| [`romanian_whist_android`](https://github.com/conectionist/romanian_whist_android) | The Android app, planned |
 
 ## License
 

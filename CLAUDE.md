@@ -5,7 +5,9 @@
 The owner uses this machine while you work. A command that takes every core makes it unusable,
 and that is worse than any wait. **Slower is always acceptable; a frozen desktop never is.**
 
-- **Builds:** `nice -n 19 npm run build`. Image processing is the heavy part of it.
+- **Builds:** `nice -n 19 npm run build`. Image processing is the heavy part of it, so the build
+  script sets `UV_THREADPOOL_SIZE=2` and `VIPS_CONCURRENCY=1`, and so does the Dockerfile, where the
+  build also runs under `nice -n 19`. Never raise them, and never run Astro's build without them.
 - **Tests:** `nice -n 19 npx vitest run --maxWorkers=2` and `nice -n 19 npm run e2e -- --workers=1`.
   Run one file or one `--grep` while iterating, and the whole suite once at the end.
 - **The comparison pictures** (`npm run shots`) only at the end of a phase or when the owner asks,
@@ -41,10 +43,12 @@ pictures side by side and ask.
 
 - Every word a visitor sees is in `src/i18n/en.ts` and `src/i18n/ro.ts`, never in a component.
   A change to one is a change to both, in the same commit.
+- Romanian is the default language: its pages are at the root, English is under `/en/`.
 - The game is called Romanian Whist in English and Whist in Romanian.
 - Romanian is written with the comma below: ș and ț, never ş and ţ.
 - The Romanian words for the game are the desktop client's (the plan's section 7.2): mână for a
-  trick, licitație, atu, culoarea de jos, Fruntea, Neveul, Socotitor. Don't invent new ones; ask.
+  trick, licitație, atu, culoarea de jos, Fruntea, Neveul, Socotitor, adversari AI. Don't invent new
+  ones; ask.
 - Every link to a page of the site goes through `localizedPath()`, never a hand-written `href`.
 
 ## Versions
@@ -114,12 +118,13 @@ The owner wants to see each phase's result without running the site. A phase tha
 page looks ends with these in its closing message:
 
 1. Take the pictures: `nice -n 19 npm run shots`. It writes each page in both languages at 1440 px
-   and at 390 px, full height, into `build/shots/<name>/`, plus the mock-up's moments (the
-   screenshot viewer open, wide and on a phone; the language menu open; the phone menu open;
-   Downloads with Linux and with macOS picked).
+   and at 390 px, full height, into `build/shots/<phase>/` (`phase-2` and so on), plus the
+   mock-up's moments (the screenshot viewer open, wide and on a phone; the language menu open; the
+   phone menu open; Downloads with Linux and with macOS picked).
 2. It pairs each picture with the mock-up's of the same name in `docs/site-mockup/screenshots/`:
    the site on the left, the mock-up on the right, each labelled, as
-   `build/shots/<name>/compare-<name>.png`. `build/` is git-ignored, so these are never committed.
+   `build/shots/<phase>/compare-<page>.png`, where `<page>` is the picture's name, such as
+   `en-home`. `build/` is git-ignored, so these are never committed.
    Add a close-up of any part where the two differ: a whole page is small.
 3. Link the comparisons, wide and phone. Add a line or two on what matches the mock-up and what
    still differs.
