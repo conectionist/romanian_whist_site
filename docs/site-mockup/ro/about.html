@@ -48,7 +48,7 @@ body{margin:0}
       <a class="nav-link" href="about.html" aria-current="page" style="padding: 10px 0 8px; text-decoration: none; color: #f0cd7a; border-bottom: 2px solid #e2b65a">Despre</a>
     </div>
     <div style="position: relative">
-      <a href="../en/about.html" hreflang="en" lang="en" style="display: flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 6px; border: 0; background: transparent; color: #f3ead6; font: inherit; cursor: pointer; text-decoration: none" aria-label="English">
+      <a href="../en/about.html" hreflang="en" style="display: flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 6px; border: 0; background: transparent; color: #f3ead6; font: inherit; cursor: pointer; text-decoration: none" aria-label="RO, English">
         <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9S9.5 5.7 12 3z"></path></svg>
         <span style="font-size: 15px">RO</span>
         <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg>
@@ -69,7 +69,7 @@ body{margin:0}
   <nav aria-label="Pe această pagină" style="margin-top: 18px; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px">
     <a class="toc" href="#game" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 18px; border-radius: 999px; border: 1px solid rgba(226,182,90,0.4); color: #e9e1cd; text-decoration: none">Jocul</a>
     <a class="toc" href="#rules" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 18px; border-radius: 999px; border: 1px solid rgba(226,182,90,0.4); color: #e9e1cd; text-decoration: none">Reguli și punctaj</a>
-    <a class="toc" href="#opponents" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 18px; border-radius: 999px; border: 1px solid rgba(226,182,90,0.4); color: #e9e1cd; text-decoration: none">Adversari AI</a>
+    <a class="toc" href="#opponents" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 18px; border-radius: 999px; border: 1px solid rgba(226,182,90,0.4); color: #e9e1cd; text-decoration: none">Roboții</a>
     <a class="toc" href="#source" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 18px; border-radius: 999px; border: 1px solid rgba(226,182,90,0.4); color: #e9e1cd; text-decoration: none">Cod sursă deschis</a>
   </nav>
 </section>
@@ -125,14 +125,14 @@ body{margin:0}
 
 <section id="opponents" aria-labelledby="opp-title" style="max-width: 1180px; margin: 0 auto; padding: 48px 48px; box-sizing: border-box; display: flex; flex-direction: column; gap: 22px">
   <div style="display: flex; flex-direction: column; gap: 6px">
-    <h2 id="opp-title" style="margin: 0; font-family: 'Playfair Display', serif; font-weight: 700; font-size: 38px; color: #f3ead6">Nouă adversari AI</h2>
-    <p style="margin: 0; color: #c3cdbd">Fiecare loc poate avea alt adversar AI. Alege o masă blândă sau una care numără fiecare carte.</p>
+    <h2 id="opp-title" style="margin: 0; font-family: 'Playfair Display', serif; font-weight: 700; font-size: 38px; color: #f3ead6">Nouă roboți</h2>
+    <p style="margin: 0; color: #c3cdbd">Fiecare loc poate avea alt robot. Alege o masă blândă sau una care numără fiecare carte.</p>
   </div>
   <div style="overflow-x: auto; border-radius: 16px; border: 1px solid rgba(226,182,90,0.42); background: linear-gradient(180deg, rgba(20,52,38,0.88), rgba(8,28,20,0.94))">
     <table style="width: 100%; min-width: 620px; border-collapse: collapse; font-size: 16px">
       <thead>
         <tr style="border-bottom: 1px solid rgba(226,182,90,0.4)">
-          <th scope="col" style="text-align: left; padding: 14px 22px; font-size: 13px; letter-spacing: 2.5px; text-transform: uppercase; color: #e2b65a; width: 240px">Adversar</th>
+          <th scope="col" style="text-align: left; padding: 14px 22px; font-size: 13px; letter-spacing: 2.5px; text-transform: uppercase; color: #e2b65a; width: 240px">Robot</th>
           <th scope="col" style="text-align: left; padding: 14px 22px; font-size: 13px; letter-spacing: 2.5px; text-transform: uppercase; color: #e2b65a">Cum joacă</th>
         </tr>
       </thead>
@@ -161,13 +161,13 @@ body{margin:0}
 <section id="source" aria-labelledby="src-title" style="max-width: 1180px; margin: 0 auto; padding: 48px 48px 88px; box-sizing: border-box; display: flex; flex-direction: column; gap: 22px">
   <div style="display: flex; flex-direction: column; gap: 6px">
     <h2 id="src-title" style="margin: 0; font-family: 'Playfair Display', serif; font-weight: 700; font-size: 38px; color: #f3ead6">Cod sursă deschis</h2>
-    <p style="margin: 0; max-width: 760px; color: #c3cdbd">Un singur motor de joc în C++20 conține toate regulile și toți adversarii AI. Fiecare versiune a jocului se bazează pe el, așa că toate joacă exact același joc.</p>
+    <p style="margin: 0; max-width: 760px; color: #c3cdbd">Un singur motor de joc în C++20 conține toate regulile și toți roboții. Fiecare versiune a jocului se bazează pe el, așa că toate joacă exact același joc.</p>
   </div>
   <ul class="stack-1" style="list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 18px">
     
       <li><a class="repo" href="https://github.com/conectionist/romanian_whist_engine" style="display: flex; flex-direction: column; gap: 6px; height: 100%; box-sizing: border-box; padding: 20px 22px; border-radius: 14px; border: 1px solid rgba(226,182,90,0.35); background: rgba(0,0,0,0.22); color: #e9e1cd; text-decoration: none">
         <span style="display: flex; justify-content: space-between; gap: 10px"><strong style="font-size: 19px; color: #f3ead6">Motorul de joc</strong><span style="font-size: 13px; color: #a9b5a6">AGPL-3.0</span></span>
-        <span style="font-size: 15px; color: #c3cdbd">Regulile, punctajul și adversarii AI. Fără interfață.</span>
+        <span style="font-size: 15px; color: #c3cdbd">Regulile, punctajul și roboții. Fără interfață.</span>
         <span style="font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 13px; color: #f0cd7a">romanian_whist_engine</span></a></li>
     
       <li><a class="repo" href="https://github.com/conectionist/romanian_whist_desktop" style="display: flex; flex-direction: column; gap: 6px; height: 100%; box-sizing: border-box; padding: 20px 22px; border-radius: 14px; border: 1px solid rgba(226,182,90,0.35); background: rgba(0,0,0,0.22); color: #e9e1cd; text-decoration: none">

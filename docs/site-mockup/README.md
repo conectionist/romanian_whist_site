@@ -41,9 +41,8 @@ The pages reflow at two widths, in the CSS at the top of each page's `.dc.html`:
 ## What the static pages leave out
 
 On the canvas the pages work, and open in Romanian, the site's default: the language menu
-translates them, the Menu button opens, the
-Windows/Linux/macOS switches change the download, the screenshot filters filter and a screenshot
-opens in a viewer. The static export keeps none of that. In it, the globe in the header links to the
+translates them, the Menu button opens, the Windows/Linux/macOS switches change the download, the
+screenshot filters filter and a screenshot opens in a viewer. The static export keeps none of that. In it, the globe in the header links to the
 same page in the other language, and `screenshots/` shows the moments that need a click.
 
 ## Reading the canvas files

@@ -1,5 +1,4 @@
-// The canvas's pages as static HTML in both languages, and their screenshots. The fonts come from
-// Google Fonts, so it needs a connection.
+// Needs a connection: the pages load their fonts from Google Fonts.
 
 import { mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { createRequire } from "node:module";
@@ -173,9 +172,9 @@ function renderPage({ sources, pageName, lang, state, children, blobs, fileOf, o
     const link = out.createElement("a");
     link.setAttribute("href", `../${otherLangFile}`);
     link.setAttribute("hreflang", otherLang);
-    link.setAttribute("lang", otherLang);
     link.setAttribute("style", `${globe.getAttribute("style")}; text-decoration: none`);
-    link.setAttribute("aria-label", otherLangName);
+    // The accessible name keeps the visible code, so speech input can find the link by it.
+    link.setAttribute("aria-label", `${globe.textContent.trim()}, ${otherLangName}`);
     link.append(...globe.childNodes);
     globe.replaceWith(link);
   }

@@ -170,13 +170,12 @@ texts(lang) {
       sc4: 'A 5-a greșeală la rând',
       scoreNote: 'Rundele de o carte nu se numără la serii. Câștigă cel cu cel mai mare total la sfârșitul jocului.',
       detailA: 'Toate detaliile, inclusiv ordinea rundelor, sunt în ', detailLink: 'regulamentul motorului de joc', detailB: ' (în engleză).',
-      oppToc: 'Adversari AI',
-      oppTitle: 'Nouă adversari AI',
-      oppSub: 'Fiecare loc poate avea alt adversar AI. Alege o masă blândă sau una care numără fiecare carte.',
-      oppCol: 'Adversar', howCol: 'Cum joacă',
+      oppToc: 'Roboții',
+      oppTitle: 'Nouă roboți',
+      oppSub: 'Fiecare loc poate avea alt robot. Alege o masă blândă sau una care numără fiecare carte.',
+      oppCol: 'Robot', howCol: 'Cum joacă',
       srcTitle: 'Cod sursă deschis',
-      srcSub: 'Un singur motor de joc în C++20 conține toate regulile și toți adversarii AI. Fiecare versiune a jocului se bazează pe el, așa că toate joacă exact același joc.',
-      planned: 'planificat'
+      srcSub: 'Un singur motor de joc în C++20 conține toate regulile și toți roboții. Fiecare versiune a jocului se bazează pe el, așa că toate joacă exact același joc.'
     };
   }
   return {
@@ -200,13 +199,12 @@ texts(lang) {
     sc4: '5th miss in a row',
     scoreNote: "One-card rounds don't count towards streaks. The highest total at the end of the game wins.",
     detailA: "Every detail, including the round schedules, is in the engine's ", detailLink: 'rules document', detailB: '.',
-    oppToc: 'Computer opponents',
-    oppTitle: 'Nine computer opponents',
+    oppToc: 'Computer players',
+    oppTitle: 'Nine computer players',
     oppSub: 'Each seat can play a different one. Pick a gentle table, or one that counts every card.',
-    oppCol: 'Opponent', howCol: 'How it plays',
+    oppCol: 'Computer player', howCol: 'How it plays',
     srcTitle: 'Open source',
-    srcSub: 'One C++20 engine holds every rule and every computer opponent. Each version of the game is a client of it, so they all play exactly the same game.',
-    planned: 'planned'
+    srcSub: 'One C++20 engine holds every rule and every computer player. Each version of the game is a client of it, so they all play exactly the same game.'
   };
 }
 renderVals() {
@@ -229,7 +227,7 @@ const opp = [
     ro: ['Socotitor Beta, Gama, Delta', 'Își imaginează împărțiri posibile înaintea fiecărei cărți și joacă ce iese cel mai bine în ele. Beta joacă uneori la întâmplare; Gama și Delta niciodată.'] }
 ];
 const repos = [
-  { repo: 'romanian_whist_engine', licence: 'AGPL-3.0', en: ['Engine', 'The rules, the scoring and the computer opponents. No user interface.'], ro: ['Motorul de joc', 'Regulile, punctajul și adversarii AI. Fără interfață.'] },
+  { repo: 'romanian_whist_engine', licence: 'AGPL-3.0', en: ['Engine', 'The rules, the scoring and the computer players. No user interface.'], ro: ['Motorul de joc', 'Regulile, punctajul și roboții. Fără interfață.'] },
   { repo: 'romanian_whist_desktop', licence: 'GPL-3.0', en: ['Desktop', 'The desktop app for Windows, Linux and macOS.'], ro: ['Desktop', 'Aplicația desktop pentru Windows, Linux și macOS.'] },
   { repo: 'romanian_whist_terminal', licence: 'GPL-3.0', en: ['Terminal', 'The game in a terminal, played from the keyboard.'], ro: ['Terminal', 'Jocul în terminal, jucat de la tastatură.'] },
   { repo: 'romanian_whist_server', licence: 'AGPL-3.0', en: ['Server', 'Runs the online tables and solo games for the browser client.'], ro: ['Server', 'Găzduiește mesele online și jocurile solo pentru pagina web.'] },
@@ -248,10 +246,10 @@ return {
     url: 'https://github.com/conectionist/' + r.repo,
     name: r[lang][0],
     text: r[lang][1],
-    licence: r.planned ? r.licence + ' · ' + t.planned : r.licence,
-    border: r.planned ? 'rgba(169,181,166,0.45)' : 'rgba(226,182,90,0.35)',
-    borderStyle: r.planned ? 'dashed' : 'solid',
-    textColor: r.planned ? '#a9b5a6' : '#c3cdbd'
+    licence: r.licence,
+    border: 'rgba(226,182,90,0.35)',
+    borderStyle: 'solid',
+    textColor: '#c3cdbd'
   })),
   setLang: (l) => {
     try { window.localStorage.setItem('whist-site-lang', l); } catch (e) {}
