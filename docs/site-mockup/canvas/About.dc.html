@@ -145,7 +145,7 @@ componentWillUnmount() {
   try { window.removeEventListener('storage', this.onStorage); } catch (e) {}
 }
 readLang() {
-  try { return window.localStorage.getItem('whist-site-lang') === 'ro' ? 'ro' : 'en'; } catch (e) { return 'en'; }
+  try { return window.localStorage.getItem('whist-site-lang') === 'en' ? 'en' : 'ro'; } catch (e) { return 'ro'; }
 }
 texts(lang) {
   if (lang === 'ro') {
@@ -170,12 +170,12 @@ texts(lang) {
       sc4: 'A 5-a greșeală la rând',
       scoreNote: 'Rundele de o carte nu se numără la serii. Câștigă cel cu cel mai mare total la sfârșitul jocului.',
       detailA: 'Toate detaliile, inclusiv ordinea rundelor, sunt în ', detailLink: 'regulamentul motorului de joc', detailB: ' (în engleză).',
-      oppToc: 'Adversari virtuali',
-      oppTitle: 'Nouă adversari virtuali',
-      oppSub: 'Fiecare loc poate avea alt adversar. Alege o masă blândă sau una care numără fiecare carte.',
+      oppToc: 'Adversari AI',
+      oppTitle: 'Nouă adversari AI',
+      oppSub: 'Fiecare loc poate avea alt adversar AI. Alege o masă blândă sau una care numără fiecare carte.',
       oppCol: 'Adversar', howCol: 'Cum joacă',
       srcTitle: 'Cod sursă deschis',
-      srcSub: 'Un singur motor de joc în C++20 conține toate regulile și toți adversarii virtuali. Fiecare versiune a jocului se bazează pe el, așa că toate joacă exact același joc.',
+      srcSub: 'Un singur motor de joc în C++20 conține toate regulile și toți adversarii AI. Fiecare versiune a jocului se bazează pe el, așa că toate joacă exact același joc.',
       planned: 'planificat'
     };
   }
@@ -210,7 +210,7 @@ texts(lang) {
   };
 }
 renderVals() {
-const lang = (this.state && this.state.lang) || 'en';
+const lang = (this.state && this.state.lang) || 'ro';
 const t = this.texts(lang);
 const opp = [
   { en: ['Random', 'Bids a random legal number and plays a random legal card.'],
@@ -229,12 +229,11 @@ const opp = [
     ro: ['Socotitor Beta, Gama, Delta', 'Își imaginează împărțiri posibile înaintea fiecărei cărți și joacă ce iese cel mai bine în ele. Beta joacă uneori la întâmplare; Gama și Delta niciodată.'] }
 ];
 const repos = [
-  { repo: 'romanian_whist_engine', licence: 'AGPL-3.0', en: ['Engine', 'The rules, the scoring and the computer opponents. No user interface.'], ro: ['Motorul de joc', 'Regulile, punctajul și adversarii virtuali. Fără interfață.'] },
+  { repo: 'romanian_whist_engine', licence: 'AGPL-3.0', en: ['Engine', 'The rules, the scoring and the computer opponents. No user interface.'], ro: ['Motorul de joc', 'Regulile, punctajul și adversarii AI. Fără interfață.'] },
   { repo: 'romanian_whist_desktop', licence: 'GPL-3.0', en: ['Desktop', 'The desktop app for Windows, Linux and macOS.'], ro: ['Desktop', 'Aplicația desktop pentru Windows, Linux și macOS.'] },
   { repo: 'romanian_whist_terminal', licence: 'GPL-3.0', en: ['Terminal', 'The game in a terminal, played from the keyboard.'], ro: ['Terminal', 'Jocul în terminal, jucat de la tastatură.'] },
   { repo: 'romanian_whist_server', licence: 'AGPL-3.0', en: ['Server', 'Runs the online tables and solo games for the browser and Android.'], ro: ['Server', 'Găzduiește mesele online și jocurile solo pentru browser și Android.'] },
-  { repo: 'romanian_whist_web', licence: 'AGPL-3.0', en: ['Browser', "The page you play online in, in the desktop app's look."], ro: ['Browser', 'Pagina în care joci online, în stilul aplicației desktop.'] },
-  { repo: 'romanian_whist_android', licence: 'GPL-3.0', planned: true, en: ['Android', 'The phone app. The plan and the mock-up are there; the app is next.'], ro: ['Android', 'Aplicația pentru telefon. Planul și macheta sunt gata; urmează aplicația.'] }
+  { repo: 'romanian_whist_web', licence: 'AGPL-3.0', en: ['Browser', "The page you play online in, in the desktop app's look."], ro: ['Browser', 'Pagina în care joci online, în stilul aplicației desktop.'] }
 ];
 return {
   lang,

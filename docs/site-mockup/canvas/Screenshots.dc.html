@@ -123,7 +123,7 @@ componentWillUnmount() {
   try { window.removeEventListener('storage', this.onStorage); } catch (e) {}
 }
 readLang() {
-  try { return window.localStorage.getItem('whist-site-lang') === 'ro' ? 'ro' : 'en'; } catch (e) { return 'en'; }
+  try { return window.localStorage.getItem('whist-site-lang') === 'en' ? 'en' : 'ro'; } catch (e) { return 'ro'; }
 }
 texts(lang) {
   if (lang === 'ro') {
@@ -155,7 +155,7 @@ texts(lang) {
 }
 renderVals() {
 const s = this.state || {};
-const lang = s.lang || 'en';
+const lang = s.lang || 'ro';
 const t = this.texts(lang);
 const filter = s.filter || 'all';
 const D = 'Desktop', T = 'Terminal', B = 'Browser';
@@ -175,7 +175,7 @@ const all = [
   { platform: B, src: '/_blob/10a2c442e56975e252c9134ee8762d16', en: 'The lobby: fill every seat with friends or computer players, then start.', ro: 'Așteptarea la masă: umple locurile cu prieteni sau cu calculatorul, apoi începe.' },
   { platform: B, src: '/_blob/3f304f894d53aed55f33d6063dbbf5d0', en: 'The main menu: a solo game or an online table.', ro: 'Meniul principal: un joc solo sau o masă online.' },
   { platform: T, src: '/_blob/1ce0a5c0e90f94316661ee8853f0ff81', en: 'Start a quick game, watch the bots, or set the game up yourself.', ro: 'Începe un joc rapid, urmărește calculatorul jucând sau configurează jocul.' },
-  { platform: T, src: '/_blob/bd67153bef76781a5e2bd58fe1e55573', en: 'Choose how each bot plays.', ro: 'Alege cum joacă fiecare adversar virtual.' },
+  { platform: T, src: '/_blob/bd67153bef76781a5e2bd58fe1e55573', en: 'Choose how each bot plays.', ro: 'Alege cum joacă fiecare adversar AI.' },
   { platform: T, src: '/_blob/f4f14cf5384a7ed69047374e9e60a6a4', ...bidding },
   { platform: T, src: '/_blob/3f467681c28adae453eb16a3b678915f', en: 'Your turn: you must follow spades, so only your spades are numbered.', ro: 'E rândul tău: trebuie să pui pică, așa că doar cărțile de pică sunt numerotate.' },
   { platform: T, src: '/_blob/ed6042ea3292d76ae6b17e7e0f68696d', ...forehead },

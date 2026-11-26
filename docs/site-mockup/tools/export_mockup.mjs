@@ -1,9 +1,5 @@
-// Turns the design canvas's pages (../canvas/*.dc.html) into plain static HTML, one copy per
-// language, and takes full-page screenshots of them.
-//
-//   node docs/site-mockup/tools/export_mockup.mjs
-//
-// Needs Playwright with Chromium. The fonts come from Google Fonts, so it needs a connection.
+// The canvas's pages as static HTML in both languages, and their screenshots. The fonts come from
+// Google Fonts, so it needs a connection.
 
 import { mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { createRequire } from "node:module";
@@ -16,7 +12,7 @@ function loadChromium() {
     try {
       return require(name).chromium;
     } catch {
-      // Try the next one.
+      continue;
     }
   }
   throw new Error("Playwright is not installed: npm install --no-save playwright");
@@ -38,6 +34,11 @@ const PAGES = [
   { name: "About", file: "about" },
 ];
 const LANGS = ["en", "ro"];
+const LANG_NAMES = { en: "English", ro: "Română" };
+const TITLES = {
+  en: { Main: "Romanian Whist", Downloads: "Downloads · Romanian Whist", Screenshots: "Screenshots · Romanian Whist", About: "About · Romanian Whist" },
+  ro: { Main: "Whist", Downloads: "Descărcări · Whist", Screenshots: "Imagini · Whist", About: "Despre · Whist" },
+};
 
 const PHONE = { width: 390, scale: 2 };
 
@@ -52,7 +53,7 @@ const MOMENTS = [
 ];
 
 // Runs in the browser, so the HTML parser and the DOM are the browser's own.
-function renderPage({ sources, pageName, lang, state, children, blobs, fileOf, otherLangFile }) {
+function renderPage({ sources, pageName, lang, state, children, blobs, fileOf, otherLangFile, otherLang, otherLangName, pageTitle }) {
   class DCLogic {
     constructor(props) {
       this.props = props || {};
@@ -171,8 +172,10 @@ function renderPage({ sources, pageName, lang, state, children, blobs, fileOf, o
   if (globe) {
     const link = out.createElement("a");
     link.setAttribute("href", `../${otherLangFile}`);
+    link.setAttribute("hreflang", otherLang);
+    link.setAttribute("lang", otherLang);
     link.setAttribute("style", `${globe.getAttribute("style")}; text-decoration: none`);
-    link.setAttribute("aria-label", globe.getAttribute("aria-label"));
+    link.setAttribute("aria-label", otherLangName);
     link.append(...globe.childNodes);
     globe.replaceWith(link);
   }
@@ -180,7 +183,7 @@ function renderPage({ sources, pageName, lang, state, children, blobs, fileOf, o
   const head = [
     '<meta charset="utf-8">',
     '<meta name="viewport" content="width=device-width, initial-scale=1">',
-    `<title>${title}</title>`,
+    `<title>${pageTitle || title}</title>`,
     ...helmetLinks.values(),
     `<style>\n${asset([...new Set(helmetStyles)].join("\n"))}\n</style>`,
   ].join("\n");
@@ -198,6 +201,9 @@ async function render(pageName, lang, state = {}, children = {}) {
   return page.evaluate(renderPage, {
     sources, pageName, lang, state, children, blobs, fileOf,
     otherLangFile: `${other}/${fileOf[pageName]}.html`,
+    otherLang: other,
+    otherLangName: LANG_NAMES[other],
+    pageTitle: TITLES[lang][pageName],
   });
 }
 
