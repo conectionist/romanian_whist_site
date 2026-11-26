@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Romanian Whist: screenshots</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Alegreya+Sans:wght@400;500;700&amp;family=Cormorant+Garamond:ital,wght@1,500;1,600&amp;family=Playfair+Display:wght@600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0b2a1e}
+a{color:#f0cd7a}a:hover{color:#ffe3a3}
+.felt{background-color:#0b2a1e;background-image:radial-gradient(ellipse 70% 55% at 50% 8%,rgba(46,120,78,0.5),rgba(11,42,30,0) 70%),linear-gradient(180deg,rgba(6,24,17,0.25),rgba(5,20,14,0.9)),url(/_blob/1b8aca3e600c0f6ec6884ab51b63e2db);background-size:auto,auto,420px}
+.nav-link:hover{color:#f0cd7a !important}
+.shot{transition:transform .18s ease, box-shadow .18s ease}
+.shot:hover{transform:translateY(-4px);box-shadow:0 26px 50px rgba(0,0,0,0.5) !important}
+.chip:hover{color:#f3ead6 !important}
+</style>
+</helmet>
+<div class="felt" lang="{{lang}}" style="min-height: 100vh; color: #e9e1cd; font-family: 'Alegreya Sans', sans-serif; font-size: 17px; line-height: 1.5; overflow-x: hidden">
+
+<dc-import name="Header" active="screenshots" lang="{{lang}}" on-lang="{{setLang}}" hint-size="100%,76px"></dc-import>
+
+<main>
+<section aria-labelledby="shots-title" style="max-width: 1180px; margin: 0 auto; padding: 72px 48px 28px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 14px">
+  <h1 id="shots-title" style="margin: 0; font-family: 'Playfair Display', serif; font-weight: 700; font-size: clamp(48px, 6vw, 76px); line-height: 1.05; background: linear-gradient(180deg, #f8e1a0 0%, #e2b65a 55%, #b98a33 100%); -webkit-background-clip: text; background-clip: text; color: transparent">{{t.title}}</h1>
+  <p style="margin: 0; font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 500; font-size: 30px; color: #efe4c8">{{t.subtitle}}</p>
+  <div role="group" aria-label="{{t.filterLabel}}" style="margin-top: 18px; display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; padding: 5px; border-radius: 999px; border: 1px solid rgba(226,182,90,0.3); background: rgba(0,0,0,0.25)">
+    <sc-for list="{{filters}}" as="f" hint-placeholder-count="4">
+      <button class="chip" type="button" onClick="{{f.pick}}" aria-pressed="{{f.on}}" style="min-height: 44px; padding: 0 22px; border: 0; border-radius: 999px; font: inherit; font-weight: 700; cursor: pointer; background: {{f.bg}}; color: {{f.fg}}">{{f.label}} <span style="font-weight: 400; opacity: 0.75">{{f.count}}</span></button>
+    </sc-for>
+  </div>
+</section>
+
+<section aria-label="{{t.gridLabel}}" style="max-width: 1280px; margin: 0 auto; padding: 24px 48px 56px; box-sizing: border-box">
+  <ul style="list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 26px">
+    <sc-for list="{{shown}}" as="s" hint-placeholder-count="9">
+      <li>
+        <button class="shot" type="button" onClick="{{s.open}}" aria-label="{{s.label}}" style="display: flex; flex-direction: column; width: 100%; padding: 0; text-align: left; font: inherit; color: inherit; cursor: zoom-in; border-radius: 16px; border: 1px solid rgba(226,182,90,0.4); background: linear-gradient(180deg, rgba(20,52,38,0.9), rgba(8,28,20,0.95)); box-shadow: 0 16px 34px rgba(0,0,0,0.35); overflow: hidden">
+          <span style="display: block; width: 100%; aspect-ratio: 16 / 10; background: {{s.bg}}; border-bottom: 1px solid rgba(226,182,90,0.25)">
+            <img src="{{s.src}}" alt="" style="display: block; width: 100%; height: 100%; object-fit: {{s.fit}}">
+          </span>
+          <span style="display: flex; flex-direction: column; gap: 6px; padding: 14px 18px 18px">
+            <span style="align-self: flex-start; padding: 1px 10px; border-radius: 999px; border: 1px solid rgba(226,182,90,0.45); font-size: 12px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #f0cd7a">{{s.platform}}</span>
+            <span style="font-size: 16px; color: #e9e1cd">{{s.caption}}</span>
+          </span>
+        </button>
+      </li>
+    </sc-for>
+  </ul>
+</section>
+
+<section aria-labelledby="motion-title" style="max-width: 1280px; margin: 0 auto; padding: 16px 48px 88px; box-sizing: border-box; display: flex; flex-direction: column; gap: 26px">
+  <div style="display: flex; align-items: center; gap: 22px">
+    <span aria-hidden="true" style="flex: 1; height: 1px; background: linear-gradient(90deg, rgba(226,182,90,0), rgba(226,182,90,0.7))"></span>
+    <h2 id="motion-title" style="margin: 0; font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 600; font-size: 34px; color: #efe4c8">{{t.motion}}</h2>
+    <span aria-hidden="true" style="flex: 1; height: 1px; background: linear-gradient(90deg, rgba(226,182,90,0.7), rgba(226,182,90,0))"></span>
+  </div>
+  <div style="display: flex; flex-wrap: wrap; gap: 26px">
+    <figure style="flex: 1.6 1 520px; min-width: 0; margin: 0; padding: 10px; border-radius: 16px; border: 1px solid rgba(226,182,90,0.4); background: rgba(8,28,20,0.9)">
+      <img src="/_blob/27dbd0282150078dac0f2a0a8b5d76a7" alt="{{t.gifDesktop}}" style="display: block; width: 100%; height: auto; border-radius: 10px">
+      <figcaption style="padding: 12px 6px 4px; font-size: 15px; color: #b9c4b3">{{t.gifDesktop}}</figcaption>
+    </figure>
+    <figure style="flex: 1 1 340px; min-width: 0; margin: 0; padding: 10px; border-radius: 16px; border: 1px solid rgba(226,182,90,0.4); background: rgba(8,28,20,0.9)">
+      <img src="/_blob/702ead22136667b9aef376e66c96eb5e" alt="{{t.gifTerminal}}" style="display: block; width: 100%; height: auto; border-radius: 10px">
+      <figcaption style="padding: 12px 6px 4px; font-size: 15px; color: #b9c4b3">{{t.gifTerminal}}</figcaption>
+    </figure>
+  </div>
+</section>
+</main>
+
+<dc-import name="Footer" lang="{{lang}}" hint-size="100%,300px"></dc-import>
+
+<sc-if value="{{lightbox.open}}" hint-placeholder-val="{{ false }}">
+  <div style="position: fixed; inset: 0; z-index: 50; display: flex; align-items: center; justify-content: center; padding: 32px; box-sizing: border-box; background: rgba(3,12,8,0.9)">
+    <button type="button" onClick="{{close}}" aria-label="{{t.close}}" style="position: absolute; right: 24px; top: 20px; width: 48px; height: 48px; border-radius: 50%; border: 1px solid rgba(226,182,90,0.5); background: rgba(0,0,0,0.4); color: #f3ead6; cursor: pointer; display: flex; align-items: center; justify-content: center">
+      <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <button type="button" onClick="{{prev}}" aria-label="{{t.prev}}" style="flex: none; width: 52px; height: 52px; border-radius: 50%; border: 1px solid rgba(226,182,90,0.5); background: rgba(0,0,0,0.4); color: #f3ead6; cursor: pointer; display: flex; align-items: center; justify-content: center">
+      <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg>
+    </button>
+    <figure style="flex: 1; min-width: 0; max-width: 1400px; margin: 0 20px; display: flex; flex-direction: column; align-items: center; gap: 14px">
+      <img src="{{lightbox.src}}" alt="{{lightbox.caption}}" style="display: block; max-width: 100%; max-height: 78vh; border-radius: 10px; border: 1px solid rgba(226,182,90,0.45); box-shadow: 0 30px 70px rgba(0,0,0,0.6)">
+      <figcaption style="display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 14px; text-align: center; color: #e9e1cd">
+        <span style="color: #f0cd7a; font-weight: 700">{{lightbox.platform}}</span>
+        <span>{{lightbox.caption}}</span>
+        <span style="color: #a9b5a6">{{lightbox.position}}</span>
+      </figcaption>
+    </figure>
+    <button type="button" onClick="{{next}}" aria-label="{{t.next}}" style="flex: none; width: 52px; height: 52px; border-radius: 50%; border: 1px solid rgba(226,182,90,0.5); background: rgba(0,0,0,0.4); color: #f3ead6; cursor: pointer; display: flex; align-items: center; justify-content: center">
+      <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+    </button>
+  </div>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2500}}'>
+class Component extends DCLogic {
+componentDidMount() {
+  this.onStorage = () => this.setState({ lang: this.readLang() });
+  this.setState({ lang: this.readLang() });
+  try { window.addEventListener('storage', this.onStorage); } catch (e) {}
+}
+componentWillUnmount() {
+  try { window.removeEventListener('storage', this.onStorage); } catch (e) {}
+}
+readLang() {
+  try { return window.localStorage.getItem('whist-site-lang') === 'ro' ? 'ro' : 'en'; } catch (e) { return 'en'; }
+}
+texts(lang) {
+  if (lang === 'ro') {
+    return {
+      title: 'Vezi jocul în acțiune.',
+      subtitle: 'Jocuri reale, din fiecare versiune.',
+      filterLabel: 'Arată imagini din',
+      gridLabel: 'Imagini',
+      all: 'Toate',
+      enlarge: 'Mărește: ',
+      motion: 'În mișcare',
+      gifDesktop: 'Desktop: licitația și primele mâini ale unui joc.',
+      gifTerminal: 'Terminal: licitezi 2 într-o rundă de 5 cărți și faci exact două mâini.',
+      close: 'Închide', prev: 'Imaginea anterioară', next: 'Imaginea următoare', of: ' din '
+    };
+  }
+  return {
+    title: 'See it in play.',
+    subtitle: 'Real games, from every version.',
+    filterLabel: 'Show screenshots of',
+    gridLabel: 'Screenshots',
+    all: 'All',
+    enlarge: 'Enlarge: ',
+    motion: 'In motion',
+    gifDesktop: 'Desktop: bidding and playing the first tricks of a game.',
+    gifTerminal: 'Terminal: bidding 2 in a 5-card round, and taking exactly two tricks.',
+    close: 'Close', prev: 'Previous screenshot', next: 'Next screenshot', of: ' of '
+  };
+}
+renderVals() {
+const s = this.state || {};
+const lang = s.lang || 'en';
+const t = this.texts(lang);
+const filter = s.filter || 'all';
+const D = 'Desktop', T = 'Terminal', B = 'Browser';
+const forehead = { en: "A forehead round: you see everyone's card but your own.", ro: 'Fruntea: vezi cartea fiecăruia, în afară de a ta.' };
+const bidding = { en: 'Bidding: how many tricks will you take?', ro: 'Licitația: câte mâini faci?' };
+const all = [
+  { platform: D, src: '/_blob/0584fa1fb82249fb3a28a9d6769bffd3', en: 'Your turn: you must follow diamonds, so the other cards are greyed out.', ro: 'E rândul tău: trebuie să pui caro, așa că celelalte cărți sunt estompate.' },
+  { platform: D, src: '/_blob/86434ab992375239151268858f699c89', ...bidding },
+  { platform: D, src: '/_blob/2b975108dbe776c59ce9260fc1bf4ff3', en: 'Six players at the table.', ro: 'Șase jucători la masă.' },
+  { platform: D, src: '/_blob/355d4bb7f1f47a645cd4fbfc89c62736', ...forehead },
+  { platform: D, src: '/_blob/b44c83d8e469ed2c6acc45ade51ba6d1', en: 'Final results.', ro: 'Rezultate finale.' },
+  { platform: D, src: '/_blob/83ec7317b75c77e1566cd7f65882958e', en: "Round history: each round's score, then tricks taken / bid.", ro: 'Istoricul rundelor: punctajul fiecărei runde, apoi mâini făcute / licitate.' },
+  { platform: D, src: '/_blob/8d78c62d7bd7a818c8b4aa3101db7ff4', en: 'In Romanian: bidding (Licitație).', ro: 'În română: licitația.' },
+  { platform: D, src: '/_blob/36ea401b5c669418d30ba551f6501a8f', en: 'In Romanian: the rules (Regulile pe scurt).', ro: 'În română: regulile pe scurt.' },
+  { platform: B, src: '/_blob/563b9655060c028ca4e5ed95c1d7414a', en: 'An 8-card round in the browser, with no trump.', ro: 'O rundă de 8 cărți în browser, fără atu.' },
+  { platform: B, src: '/_blob/efcfb14f6213ebd7b8adc20ced7c1ad4', en: 'Play online: make a table and share its link, or join one by its code.', ro: 'Joacă online: fă o masă și trimite linkul, sau intră la una cu codul ei.' },
+  { platform: B, src: '/_blob/10a2c442e56975e252c9134ee8762d16', en: 'The lobby: fill every seat with friends or computer players, then start.', ro: 'Așteptarea la masă: umple locurile cu prieteni sau cu calculatorul, apoi începe.' },
+  { platform: B, src: '/_blob/3f304f894d53aed55f33d6063dbbf5d0', en: 'The main menu: a solo game or an online table.', ro: 'Meniul principal: un joc solo sau o masă online.' },
+  { platform: T, src: '/_blob/1ce0a5c0e90f94316661ee8853f0ff81', en: 'Start a quick game, watch the bots, or set the game up yourself.', ro: 'Începe un joc rapid, urmărește calculatorul jucând sau configurează jocul.' },
+  { platform: T, src: '/_blob/bd67153bef76781a5e2bd58fe1e55573', en: 'Choose how each bot plays.', ro: 'Alege cum joacă fiecare adversar virtual.' },
+  { platform: T, src: '/_blob/f4f14cf5384a7ed69047374e9e60a6a4', ...bidding },
+  { platform: T, src: '/_blob/3f467681c28adae453eb16a3b678915f', en: 'Your turn: you must follow spades, so only your spades are numbered.', ro: 'E rândul tău: trebuie să pui pică, așa că doar cărțile de pică sunt numerotate.' },
+  { platform: T, src: '/_blob/ed6042ea3292d76ae6b17e7e0f68696d', ...forehead },
+  { platform: T, src: '/_blob/9fef00337876e6555d146c32ef0ab623', en: 'The final results, printed when the game ends.', ro: 'Rezultatele finale, afișate la sfârșitul jocului.' }
+];
+const keyOf = { all: null, desktop: D, terminal: T, browser: B };
+const list = all.filter((x) => !keyOf[filter] || x.platform === keyOf[filter]);
+const at = typeof s.at === 'number' ? s.at : -1;
+const shown = list.map((x, i) => ({
+  platform: x.platform,
+  src: x.src,
+  caption: x[lang],
+  label: t.enlarge + x[lang],
+  fit: x.platform === T ? 'contain' : 'cover',
+  bg: x.platform === T ? '#161b22' : '#0a1f16',
+  open: () => this.setState({ at: i })
+}));
+const filters = [['all', t.all], ['desktop', 'Desktop'], ['terminal', 'Terminal'], ['browser', 'Browser']].map(([k, label]) => ({
+  label,
+  count: k === 'all' ? all.length : all.filter((x) => x.platform === keyOf[k]).length,
+  on: filter === k ? 'true' : 'false',
+  bg: filter === k ? 'linear-gradient(180deg, #f6da8f, #d4a347)' : 'transparent',
+  fg: filter === k ? '#1d1a0e' : '#c3cdbd',
+  pick: () => this.setState({ filter: k, at: -1 })
+}));
+const cur = at >= 0 && at < shown.length ? shown[at] : null;
+const n = shown.length;
+return {
+  lang,
+  t,
+  filters,
+  shown,
+  lightbox: cur ? { open: true, src: cur.src, caption: cur.caption, platform: cur.platform, position: (at + 1) + t.of + n } : { open: false, src: '', caption: '', platform: '', position: '' },
+  close: () => this.setState({ at: -1 }),
+  prev: () => this.setState({ at: (at - 1 + n) % n }),
+  next: () => this.setState({ at: (at + 1) % n }),
+  setLang: (l) => {
+    try { window.localStorage.setItem('whist-site-lang', l); } catch (e) {}
+    this.setState({ lang: l });
+  }
+};
+}
+}
+</script>
+</body>
+</html>

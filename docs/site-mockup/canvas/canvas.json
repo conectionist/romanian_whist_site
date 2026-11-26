@@ -1,0 +1,21 @@
+{
+  "v": 3,
+  "createdOnFiles": {"v": 1, "at": "2026-11-26T11:10:00Z"},
+  "title": "Romanian Whist website",
+  "launch": {"view": "canvas"},
+  "pages": [],
+  "boards": {
+    "Main.dc.html": {"x": 0, "y": 0, "w": 1440, "h": 2760, "title": "Home", "expand": "fill", "is_interactive": true},
+    "Downloads.dc.html": {"x": 1520, "y": 0, "w": 1440, "h": 1900, "title": "Downloads", "expand": "fill", "is_interactive": true},
+    "Screenshots.dc.html": {"x": 3040, "y": 0, "w": 1440, "h": 2500, "title": "Screenshots", "expand": "fill", "is_interactive": true},
+    "About.dc.html": {"x": 4560, "y": 0, "w": 1440, "h": 3300, "title": "About", "expand": "fill", "is_interactive": true},
+    "Header.dc.html": {"x": 0, "y": 3700, "w": 1440, "h": 76, "title": "Header (shared)", "is_interactive": true},
+    "Footer.dc.html": {"x": 0, "y": 3896, "w": 1440, "h": 300, "title": "Footer (shared)"}
+  },
+  "order": ["Main.dc.html", "Downloads.dc.html", "Screenshots.dc.html", "About.dc.html", "Header.dc.html", "Footer.dc.html"],
+  "notes": {
+    "pagesTitle": {"x": 0, "y": -300, "text": "Pages", "kind": "title1", "maxW": 6000},
+    "altTitle": {"x": 0, "y": 3400, "text": "Shared parts", "kind": "title1", "maxW": 1440}
+  },
+  "designSystems": []
+}
