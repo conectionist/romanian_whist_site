@@ -29,7 +29,7 @@ Each client is its own repository, and all of them are built on one engine:
 
 | Repository | What it is |
 |---|---|
-| [`romanian_whist_engine`](https://github.com/conectionist/romanian_whist_engine) | The rules, the scoring and the computer opponents |
+| [`romanian_whist_engine`](https://github.com/conectionist/romanian_whist_engine) | The rules, the scoring and the computer players |
 | [`romanian_whist_desktop`](https://github.com/conectionist/romanian_whist_desktop) | The desktop client, for Windows, Linux and macOS |
 | [`romanian_whist_terminal`](https://github.com/conectionist/romanian_whist_terminal) | The terminal client |
 | [`romanian_whist_server`](https://github.com/conectionist/romanian_whist_server) | The game server for online tables |

@@ -58,7 +58,7 @@ root, and English is under `/en/` (D4). The slugs are English words in both lang
 | Home | `/` | `/en/` | What the game is, how to play in three steps, where to get it |
 | Downloads | `/downloads/` | `/en/downloads/` | The desktop and terminal clients for Windows, Linux and macOS, the browser client, Android to come |
 | Screenshots | `/screenshots/` | `/en/screenshots/` | Real screenshots of every client, filtered by client, with a viewer |
-| About | `/about/` | `/en/about/` | The rules and scoring, the nine computer opponents, the open-source repositories, credits |
+| About | `/about/` | `/en/about/` | The rules and scoring, the nine computer players, the open-source repositories, credits |
 
 Plus a 404 page in each language.
 
@@ -66,10 +66,14 @@ Plus a 404 page in each language.
 or the Republic of Moldova gets Romanian, one from anywhere else gets English, and a language picked
 in the menu always wins ([§7.3](#73-picking-the-language-by-location), D5).
 
-**It is a static site, with no backend.** The pages are the same for every visitor, and the server
-stores nothing. The one piece of data that changes, the latest release of each client, is read from GitHub's API when the
-site is built ([§8](#8-release-data)). The game's server stays the only backend, and the site only
-links to it: **Play Online** goes to `https://whist.akdscloud.eu`.
+**It is a static site, with no backend of its own.** The pages are the same for every visitor, and
+the site stores nothing about them. The one piece of data that changes, the latest release of each
+client, is read from GitHub's API when the site is built ([§8](#8-release-data)). The game's server
+stays the only application backend, and the site only links to it: **Play Online** goes to
+`https://whist.akdscloud.eu`. The one addition is on the VPS (phase 8): Caddy itself answers a small
+`/country` request, which tells the language script where the visitor is
+([§7.3](#73-picking-the-language-by-location)); whether Caddy keeps an access log is settled there
+too ([§12](#12-security-and-privacy)).
 
 It is built with **Astro**, as static HTML, CSS and a few small scripts, in TypeScript, with no UI
 framework ([§3](#3-technology)). **It runs in Docker:** an image of Caddy serving the built pages,
@@ -99,7 +103,7 @@ Its pieces, in [`docs/site-mockup/`](site-mockup/README.md):
   ([§13.5](#135-comparing-with-the-mock-up)).
 - **`canvas/*.dc.html`**: the exact values. Each element's inline style is the specification: its
   colours, sizes, gaps, radii and shadows. Each file's `texts(lang)` is the copy in both languages,
-  and its `renderVals()` holds the lists (screenshots, opponents, repositories).
+  and its `renderVals()` holds the lists (screenshots, computer players, repositories).
 - **`en/`, `ro/`**: the same pages as static HTML, to open in a browser and inspect. The folders keep
   these names; the site's own addresses are `/` for Romanian and `/en/` for English.
 
@@ -111,12 +115,12 @@ components and data files.
 
 | # | In the mock-up | In the site | Why |
 |---|---|---|---|
-| M1 | The language is a setting kept in the browser; the page redraws itself | Each language is its own set of pages, `/` (Romanian) and `/en/` (English); the language menu links to the same page in the other language | Search engines index both, a link opens in its language, and it works without JavaScript ([§7](#7-languages)) |
+| M1 | The language is a setting kept in the browser; the page redraws itself | Each language is its own set of pages, `/` (Romanian) and `/en/` (English); the language menu links to the same page in the other language | Search engines index both, a link opens in its language (unless the first-visit choice of [§7.3](#73-picking-the-language-by-location) moves it), and it works without JavaScript ([§7](#7-languages)) |
 | M2 | Fonts from Google Fonts | Fonts served by the site itself | No request to a third party, which matters for privacy in the EU, and the content-security-policy can stay `'self'` ([§12](#12-security-and-privacy)) |
 | M3 | Download buttons go to the releases page | Each goes straight to the file of the latest release, with its size | Read from GitHub when the site is built ([§8](#8-release-data)) |
 | M4 | The version and date in each card are typed in | They come from the release data | The same |
 | M5 | The OS switches start on Windows | They start on Linux for a Linux visitor, else on Windows, and never on macOS | D8 |
-| M6 | Two animated GIFs, one of them 5 MB | Short muted looping videos with a still poster, paused for people who ask for less motion | Size, and [§10.4](#104-motion) |
+| M6 | Two animated GIFs, one of them 5 MB | Short muted looping videos with a still poster, a visible pause button on each, and paused from the start for people who ask for less motion | Size, and [§9.3](#93-the-clips) and [§10.4](#104-motion) |
 | M7 | No 404 page, no credits | A 404 page in each language; a short Credits section at the end of About | Needed by a real site; the card art, the fonts and the Android robot ask for credit (D14) |
 | M8 | Thumbnails open a viewer drawn with a fixed `div` | The viewer is a native `<dialog>`; each thumbnail is also a link to the full picture | Focus, Escape and the screen reader come with `<dialog>`, and without JavaScript the link still works ([§6.4](#64-screenshots)) |
 | M9 | The phone menu is a `div` toggled by the page's state | A disclosure button with `aria-expanded` and `aria-controls`; without JavaScript, a `<details>` | It works for the keyboard and screen readers, and with JavaScript off ([§6.1](#61-on-every-page)) |
@@ -139,8 +143,8 @@ the proposed one side by side.
 |---|---|---|
 | Site generator | **Astro 7**, static output | Pages are `.astro` components rendered to HTML at build time. No server, no adapter |
 | Language | **TypeScript**, strict | `tsconfig` as strict as the browser client's: `strict`, `noUnusedLocals`, `noUnusedParameters`, `noFallthroughCasesInSwitch` |
-| Styles | **Plain CSS** with custom properties | `src/styles/tokens.css` and component-scoped `<style>`, built into files (`build.inlineStylesheets: 'never'`). No Tailwind: the design is small and consistent, and its tokens are few |
-| Scripts | **Plain TypeScript**, every script an external file | For the language choice and menu, the OS switches, the screenshot filters and the viewer. No inline script, so one `'self'` policy fits ([§12](#12-security-and-privacy)). No React, Vue or Svelte |
+| Styles | **Plain CSS** with custom properties | `src/styles/tokens.css` and component-scoped `<style>`, built into files (`build.inlineStylesheets: 'never'`, and `vite.build.assetsInlineLimit: 0`). No Tailwind: the design is small and consistent, and its tokens are few |
+| Scripts | **Plain TypeScript**, every script an external file | For the language choice and menu, the OS switches, the screenshot filters and the viewer. No inline script (`vite.build.assetsInlineLimit: 0`), so one `'self'` policy fits ([§12](#12-security-and-privacy)). No React, Vue or Svelte |
 | Images | Astro's image pipeline (`astro:assets`, with `sharp`) | Responsive WebP/AVIF at several widths, lazy below the fold |
 | Fonts | `@fontsource/*` packages | Self-hosted WOFF2, Latin and Latin Extended (Romanian's ă â î ș ț) |
 | Sitemap | `@astrojs/sitemap` | With the `hreflang` pairs |
@@ -192,8 +196,10 @@ built as files, the sitemap), not the exact API, which moves between major versi
 ## 4. Code layout
 
 ```
-astro.config.mjs        site URL, base path, i18n (ro default and unprefixed, en), integrations,
-                        build.inlineStylesheets: 'never'
+astro.config.mjs        site URL and base path (from SITE_URL, BASE_PATH: §14.1), i18n (ro default
+                        and unprefixed, en), integrations,
+                        build.inlineStylesheets: 'never',
+                        vite.build.assetsInlineLimit: 0
 package.json            scripts, exact versions, "version"
 package-lock.json
 tsconfig.json
@@ -215,7 +221,7 @@ src/
     releases.ts         the build-time fetch from GitHub, mapped to platforms (§8)
     releases.fallback.json  the last good answer, for a build that can't reach GitHub
     screenshots.ts      the 18 screenshots: file, client, caption key
-    opponents.ts        the nine computer opponents
+    computer-players.ts the nine computer players
     repos.ts            the five repositories and their licences
     links.ts            the game's address, GitHub URLs, in one place
   assets/               processed by the image pipeline (§9)
@@ -229,7 +235,7 @@ src/
     CardFan.astro  FeatureList.astro  HowToPlay.astro  PlatformBand.astro
     DownloadCard.astro  OsSwitch.astro  ReleaseFacts.astro  MottoBand.astro
     ScreenshotGrid.astro  ScreenshotViewer.astro  Clip.astro
-    RulesSteps.astro  ScoreTable.astro  OpponentTable.astro  RepoList.astro  Credits.astro
+    RulesSteps.astro  ScoreTable.astro  PlayerTable.astro  RepoList.astro  Credits.astro
   layouts/
     Base.astro          <html lang>, <head> (title, description, canonical, hreflang, OG,
                         the language script), header, footer
@@ -241,7 +247,8 @@ src/
   scripts/              the client-side TypeScript; each one is built into a file, never inlined
     language.ts           the menu: keeps the visitor's pick (§7.1)
     language-choice.ts    the pure decision of §7.3, unit-tested
-    language-redirect.ts  reads the browser and applies the decision; a classic blocking script (§7.3)
+    language-redirect.ts  reads the browser and applies the decision; built as a classic
+                          blocking script, an IIFE (§7.3)
     os-switch.ts  screenshot-filter.ts  screenshot-viewer.ts
 tests/
   unit/                 Vitest
@@ -286,6 +293,7 @@ custom properties, and components use the properties, never the raw values.
 | `--felt` | `#0b2a1e` | The page's base, under the felt |
 | `--felt-glow` | `rgba(46, 120, 78, 0.5)` | The radial glow at the top of Downloads, Screenshots and About |
 | `--felt-glow-home` | `rgba(46, 120, 78, 0.55)` | The same glow on Home, which is a little stronger |
+| `--felt-shade-top` | `#061811`, at 25% | The darkening's start, at the top of each page |
 | `--felt-shade` | `rgba(5, 20, 14, 0.9)` | The darkening towards the foot |
 | `--gold` | `#e2b65a` | Rules, borders, icons, the active underline |
 | `--gold-text` | `#f0cd7a` | Links, the outline buttons' text, badges |
@@ -305,7 +313,8 @@ custom properties, and components use the properties, never the raw values.
 | `--ink-motto` | `#e2d6b8` | The motto in the footer |
 | `--ink-dim` | `#e3dccb` | The Android card's title, a little dimmer than the other cards' |
 | `--good`, `--bad` | `#9fdcb3`, `#f2a58e` | The score table's gains and losses, the "Nothing to install" badge |
-| `--panel` | `linear-gradient(180deg, rgba(20,52,38,0.88), rgba(8,28,20,0.94))` | Cards and panels |
+| `--panel-top`, `--panel-bottom` | `#143426`, `#081c14` | The two colours of every panel's gradient |
+| `--panel` | `linear-gradient(180deg, rgba(20,52,38,0.88), rgba(8,28,20,0.94))` | Cards and panels: the two colours above at 88% and 94% |
 | `--panel-border` | `rgba(226, 182, 90, 0.42)` | Their border |
 | `--soon-border` | `rgba(169, 181, 166, 0.45)` | Android and other things to come, dashed or muted |
 | `--header-bg`, `--footer-bg` | `rgba(5,20,14,0.72)`, `rgba(4,16,11,0.85)` | The bars |
@@ -315,9 +324,27 @@ custom properties, and components use the properties, never the raw values.
 | `--thumb-bg` | `#0a1f16` | Behind the other clients' thumbnails, which fill their box |
 | `--spade-faint` | `#7fcf9a` | The large spade at Downloads' top right, at 10% opacity |
 | `--android` | `#3ddc84` | The Android robot on Downloads' card. In the chips it is `--ink-faint`, muted |
+| `--android-top`, `--android-bottom` | `#10281e`, `#081812` | The Android card's gradient, at 80% and 90%; the glow behind its picture is `--felt-glow`'s colour at 45% |
+| `--motto-top`, `--motto-bottom` | `#18281e`, `#0a1610` | The motto band's panel on Downloads, at 90% and 95% |
+| `--backdrop` | `#030c08` | The screenshot viewer's backdrop, at 90% |
+| `--fan-glow` | `#f4d68c` | The glow behind Home's card fan, at 22%, fading to nothing at 65% |
 | `--warn` | `#f5b971` | The macOS warning's icon; its border at 60% and its ground at 9% |
 | `--warn-title`, `--warn-text` | `#f8cf9a`, `#e9dcc6` | The macOS warning's title and text |
 | `--focus` | `#f8e1a0` | The focus ring, new: the mock-up draws none |
+
+**The surfaces drawn in rgba.** The tokens above hold the colours, and each surface sets its own
+alpha with `color-mix(in srgb, <token> N%, transparent)`, so there is no token per alpha:
+
+| Surface | Made of |
+|---|---|
+| Home's How-to-play steps | `--panel-top` at 80% to `--panel-bottom` at 85% |
+| Home's framed screenshot, Screenshots' tiles | `--panel-top` at 90% to `--panel-bottom` at 95% |
+| The ground of a framed picture (About, Screenshots) | `--panel-bottom` at 90% |
+| The active OS tab and filter | `--gold` at 32% to 18% |
+| The gold button's glow and highlight | a `0 8px 22px` shadow of `--button-bottom` at 28%, and an inset `0 1px 0` of white at 55% |
+| The phone in the Android card's picture | the colour of `--felt-shade` at 60% |
+| Washes: notes, chips, the OS switch's and the filters' groups, the viewer's round buttons | `#000` at 15, 18, 20, 22, 25 and 28%, and 40% for the viewer's buttons |
+| The disabled "Coming soon" | white at 4% |
 
 **The felt behind the text is lighter than `--felt`.** The glow and the texture lift it. In the
 mock-up's pictures it is about `rgb(25, 81, 49)` behind notes, captions and Home's row of clients,
@@ -330,8 +357,18 @@ Every pair of text and background is checked for a contrast of 4.5:1 at least (3
 text), **on the felt as rendered, not on `--felt`**. axe reports text over a background image as
 "incomplete", not as a violation, so the browser tests count its incomplete colour-contrast results
 as failures and sample the rendered pixels behind text where axe can't
-([§13.2](#132-in-the-browser-playwright)). Phase 1 measures the lightest pixel behind each text
-token on the real page, and lightens a token until it passes there.
+([§13.2](#132-in-the-browser-playwright)). Phase 1 measures the pixels behind each text token on
+the real page, and **proposes** a lighter value to the owner for any token that fails. Nothing
+changes a token without the owner (`CLAUDE.md`), and an accepted change is written as a new M-row
+in [§2.1](#21-where-the-site-departs-from-the-mock-up-on-purpose); M15 is the one decided so far.
+
+**A known problem: the gold page titles fail 3:1 on the lighter felt.** The gold headings' gradient
+ends in `--gold-deep` `#b98a33`, which is **2.3:1** on `rgb(34, 100, 64)`, and Home's `--gold-warm`
+`#c8963b` is **2.7:1**; large text needs 3:1. In `en-downloads.jpg` the lower part of "Play your
+way." measures about 2.6 to 3.1:1. The mock-up has this problem, and the site doesn't hide it. In
+phase 1 the owner is shown the measured ratios and a **proposed lighter foot stop** for the gradient,
+beside the mock-up's picture; if accepted, it is a new M-row. Until then the gold-heading check of
+[§13.2](#132-in-the-browser-playwright) reports these headings.
 
 ### 5.2 Type
 
@@ -376,7 +413,7 @@ vertical darkening, and the felt texture tiled at 420 px. It is set once, on `bo
 | The panel: gradient, gold border, radius, shadow | Everywhere | `Panel` |
 | The segmented control | Downloads' OS switches, Screenshots' filters | `OsSwitch`; the filters reuse its CSS |
 | The badge (version, "Nothing to install") | Downloads | inside `DownloadCard` |
-| Stroke icons: monitor, terminal, globe, phone, people, chip, clock, letters, download, arrows, close, shield, code | Everywhere | `Icon name="…"`, inline SVG, `aria-hidden` |
+| Stroke icons: monitor, terminal, globe, people, chip, clock, letters, download, arrows, close, shield, code | Everywhere | `Icon name="…"`, inline SVG, `aria-hidden` |
 | The Android robot, a filled icon | Downloads' Android card, Home's row of clients and platforms band | `Icon name="android"`, inline SVG, `aria-hidden` ([§9.4](#94-fonts-icons-and-images-made-for-the-site)) |
 
 ---
@@ -430,10 +467,10 @@ line, "© 2026" with the game's name, and the licences. The year is the build's 
    the tagline, one paragraph, the two buttons (Play Online, gold, to the game; Download, outline,
    to Downloads), and the row of four clients (Desktop, Terminal, Browser, and Android (soon) with
    its robot, muted). On the right: **the card fan**, the real cards 10♠ J♦ Q♣ K♥ A♠ from left to
-   right, at −30°, −15°, 0°, 15° and 30° about a point below their centre, each 200 px wide, over a
-   soft gold glow. The
+   right, at −30°, −15°, 0°, 15° and 30° about a point below their centre, each 200 px wide, over
+   a soft gold glow. The
    fan is decoration (`aria-hidden`). On a phone it goes below the text, at 62% of its size.
-2. **Four features**, divided by thin gold rules: 2 to 6 players; nine computer opponents; 1-8-1 /
+2. **Four features**, divided by thin gold rules: 2 to 6 players; nine computer players; 1-8-1 /
    8-1-8 with forehead and hidden rounds; English and Romanian.
 3. **A seat at the table:** one framed screenshot of the desktop client, with its caption and a
    link to Screenshots. English shows `desktop-your-turn`, Romanian `desktop-ro-bidding`.
@@ -459,7 +496,7 @@ line, "© 2026" with the game's name, and the licences. The year is the build's 
    - **Android:** muted, and only that it is coming: the mock-up's picture of a phone holding two
      cards, the Android robot in green (`--android`), the title "Android", and a disabled "Coming
      soon" (a `<span>`, not a button). No description, no badge and no link anywhere on the site:
-     the Android app's repository is private and empty.
+     the Android app's repository is private, with no app yet.
 3. **Two notes:** the builds are unsigned and need nothing installed; older versions and the source
    on GitHub, with links to both releases pages.
 4. **The motto band:** two cards (A♠, A♥) and "One game. Everywhere."
@@ -546,10 +583,11 @@ key. The captions are the mock-up's, in `en.ts` and `ro.ts`.
    the scoring table (exact bid: 5 + bid; a miss: minus the difference; 5th exact bid in a row:
    +10; 5th miss in a row: −10) and its note; then the link to the engine's `docs/RULES.md` ("(in
    English)" on the Romanian page).
-4. **Nine computer opponents** (`#opponents`): a table, in a box that scrolls sideways on a phone.
+4. **Nine computer players** (`#opponents`, the mock-up's id; "Nouă roboți" in Romanian): a table,
+   in a box that scrolls sideways on a phone.
 5. **Open source** (`#source`): five cards, one per repository (engine, desktop, terminal, server,
-   browser), each with its licence. Android has none: its repository is private and empty, so it is
-   not on the page and nothing links to it.
+   browser), each with its licence. Android has none: its repository is private, with no app yet, so
+   it is not on the page and nothing links to it.
 6. **Credits** (`#credits`), new (M7, D14): the card art (Byron Knoll, public domain), the fonts
    (SIL Open Font License), the portraits seen in the screenshots (made with AI image tools, as the
    desktop README says), and the Android robot: "The Android robot is reproduced or modified from
@@ -562,7 +600,7 @@ key. The captions are the mock-up's, in `en.ts` and `ro.ts`.
 The section ids are the same in both languages, so `#rules` works from either.
 
 **The facts are checked against their sources in phase 5:** the rules and scoring against the
-engine's `docs/RULES.md`, the opponents against the desktop README's table, the Romanian terms
+engine's `docs/RULES.md`, the computer players against the desktop README's table, the Romanian terms
 against the desktop client's translation ([§7.2](#72-the-romanian-words)).
 
 ### 6.6 The 404 pages
@@ -579,8 +617,10 @@ laid out by `build.format`. So `src/pages/404.astro`, Romanian, becomes `dist/40
 
 **Where each is served.** Caddy answers a missing path under `/en/` with `/en/404/index.html`, and
 any other with `/404.html`, both with status 404 ([§14.3](#143-docker)). GitHub Pages serves only
-the root `404.html`, for every missing path, so there the Romanian page is the only one, and it
-links to the English home too, through its language menu.
+the root `404.html`, for every missing path, `/en/…` paths included, so there the Romanian page is
+the only one served, and it links to the English home too, through its language menu. For a path
+under `/en/`, its script sends the visitor on to the English 404 page with `location.replace()`
+([§7.3](#73-picking-the-language-by-location)).
 
 ---
 
@@ -593,7 +633,7 @@ links to the English home too, through its language menu.
   `en`: `defaultLocale: 'ro'`, `locales: ['ro', 'en']`, no prefix for the default.
 - **The text lives in two dictionaries.** `src/i18n/ro.ts` and `src/i18n/en.ts` each export one
   object; `en.ts` is the source, and `ro.ts` is of the same type (`typeof en`), so a missing or
-  extra key is a type error. Lists (screenshots, opponents, repositories) keep their text in the
+  extra key is a type error. Lists (screenshots, computer players, repositories) keep their text in the
   dictionaries too, keyed by id.
 - **`t(lang)`** returns the dictionary; components take `lang` as a prop. Dates and sizes are
   formatted with `Intl`, in the page's locale (`ro-RO`, `en-GB`).
@@ -609,9 +649,10 @@ links to the English home too, through its language menu.
 
 ### 7.2 The Romanian words
 
-The site uses the words the desktop client's translation uses
-(`i18n/romanian_whist_desktop_ro_RO.ts` in `romanian_whist_desktop`), so the site and the games say
-the same thing. The mock-up already does:
+The site uses the words the clients' own translations use, so the site and the games say the same
+thing: the desktop client's (`i18n/romanian_whist_desktop_ro_RO.ts` in `romanian_whist_desktop`), and
+for the computer players the browser client's (`src/i18n/ro.page.json` in `romanian_whist_web`). The
+mock-up already does:
 
 | English | Romanian |
 |---|---|
@@ -626,11 +667,14 @@ the same thing. The mock-up already does:
 | final results | Rezultate finale |
 | Random, First card, Low risk, Ducking, Cyborg | Aleatoriu, Prima carte, Risc mic, Eschivă, Cyborg |
 | Reckoner Alpha, Beta, Gamma, Delta | Socotitor Alfa, Beta, Gama, Delta |
-| computer opponent | adversar AI, adversari AI |
+| computer player | robot, roboți |
 
-**The computer opponents are "adversari AI"** (decided by the owner, 2026-11-26). The desktop client
-says "Adversari" for its settings heading and "Bot" for a seat's name (`Bot %1`); the site uses the
-owner's term, so the pages say the same thing everywhere.
+**The computer players are "robot", "roboți"** (the browser client's word, decided by the owner,
+2026-11-26): "Nouă roboți", "înlocuit de un robot", "oameni sau roboți", "fiecare robot". In English
+they are "computer players", everywhere: not "opponents" and not "bots". The browser client says
+"Robot: %1", "ocupă-l cu un robot" and "%1 a fost înlocuit de un robot"; the desktop client says
+"Adversari" for its settings heading and "Bot" for a seat's name (`Bot %1`), and the site doesn't use
+those.
 
 **Romanian is written with the comma below:** ș and ț, never the cedilla forms ş and ţ. A unit test
 fails on a cedilla anywhere in `ro.ts`.
@@ -650,12 +694,17 @@ at the browser's language setting.
 the browser script calls and the unit tests exercise. In this order:
 
 1. **No twin:** a page with no page of the same content in the other language (the 404 pages) stays.
-2. **A crawler,** recognised by its user agent (`bot`, `crawler`, `spider`, the named search engines
-   and link-preview fetchers; not `HeadlessChrome`, so the browser tests exercise the script): stays.
+2. **A crawler,** recognised by its user agent: stays. The test is a list of named crawlers
+   (Googlebot, bingbot, DuckDuckBot, YandexBot, Baiduspider, Applebot and the link-preview fetchers,
+   such as facebookexternalhit, Slackbot and Twitterbot), plus `bot`, `crawler` and `spider` as whole
+   words. It never matches the letters "bot" inside another word: phone models such as CUBOT appear
+   in WebView user agents. It doesn't match `HeadlessChrome`, so the browser tests exercise the
+   script.
 3. **Not the first page of the visit** (below): stays. The visitor is moving through the site, and
    clicking a language link is such a move.
-4. **The language to show** is the visitor's pick when there is one (`localStorage`, `whist-site-lang`:
-   it always wins), else Romanian for a visitor from Romania or Moldova, else English.
+4. **The language to show** is the visitor's pick when there is one (`localStorage`,
+   `whist-site-lang`: it always wins), else Romanian for a visitor from Romania or Moldova, else
+   English. When the location can't be told (below) and there is no pick, the page stays.
 5. **If that is the page's own language,** it stays. Otherwise it goes to the page's twin.
 
 It works both ways: a visitor from abroad who lands on a Romanian page goes to its English twin, and
@@ -678,14 +727,25 @@ no twin.
 `Intl.DateTimeFormat().resolvedOptions().timeZone`:
 
 - `Europe/Bucharest` or `Europe/Chisinau` counts as Romania or Moldova;
-- anything else counts as abroad;
-- no time zone at all means the script stays, since it can't tell.
+- `UTC` and `Etc/*` count as "can't tell", and so does no time zone at all: a browser that hides
+  its time zone (Tor Browser, Firefox with `resistFingerprinting`) reports UTC, and UTC isn't a
+  location, so the script stays;
+- anything else counts as abroad.
 
 Nothing leaves the browser. The script is a classic script, not a module: an Astro `<script>` is a
-deferred module, which would run after the first paint. It is built into one small file from
-`src/scripts/language-redirect.ts` (with esbuild, which Astro already depends on) and loaded with
+deferred module, which would run after the first paint. It is built into one small classic script,
+an IIFE, from `src/scripts/language-redirect.ts`, with Vite or rolldown, which Astro 7 depends on
+(Vite 8 lists esbuild only as an optional peer, so it can't be relied on), and loaded with
 `<script src>`, like every script of the site ([§12](#12-security-and-privacy)); phase 1 settles the
 mechanism and writes it down. Without JavaScript the page stays as asked.
+
+**The English 404 page on GitHub Pages.** Pages answers every missing path with the root
+`404.html`, the Romanian page, including paths under `/en/`, which then have no English twin. The
+same script handles it: the Romanian 404 page carries the English prefix and the address of the
+English 404 page in two `data-` attributes (from `localizedPath()`), and when the path is under
+that prefix the script goes to the English 404 page with `location.replace()`. This is not a
+language choice, so none of the rules above apply to it. Where Caddy serves the site, an `/en/`
+path already gets the English page, and the rule does nothing.
 
 **Later, on the VPS (phase 8),** the country comes from the visitor's IP address, which is better
 than a time zone. It is looked up on the server, in a local country database, with no third party:
@@ -864,7 +924,7 @@ Between the two, and up from 600 px, the grids reflow by themselves (`auto-fit` 
 column width), as the mock-up's do.
 
 Each page phase checks its page at 360, 390, 768 and 1440 px, and shows the owner its 390 px
-pictures beside the mock-up's. The opponents table scrolls sideways in its own box; nothing else
+pictures beside the mock-up's. The computer players' table scrolls sideways in its own box; nothing else
 makes the page scroll sideways (a browser test checks it at 360 px). Every target is 44 px at least,
 on a phone too.
 
@@ -895,7 +955,9 @@ play by themselves.
   pointing to it. **On GitHub Pages `robots.txt` is of no use:** it is served at
   `/romanian_whist_site/robots.txt`, and crawlers read only the root of a host, so they ignore it
   and don't find the sitemap by it. Until the VPS, the sitemap is submitted by hand, in Google
-  Search Console and Bing Webmaster Tools (a step of phase 7).
+  Search Console and Bing Webmaster Tools (a step of phase 7), each with a verified property: for a
+  `github.io` sub-path, a verification `<meta>` tag in Home's `<head>` or a file in `public/`,
+  deployed with the site.
 - **Open Graph and Twitter tags**: title, description, the sharing picture of the page's language,
   `og:locale` of the page's language (`ro_RO` on the Romanian pages, with `en_GB` as
   `og:locale:alternate`; the reverse on the English ones).
@@ -904,8 +966,8 @@ play by themselves.
   type="application/ld+json">`, which is data, not a script, so the content-security-policy doesn't
   block it ([§12](#12-security-and-privacy)).
 - **Speed:** static HTML; JavaScript only for the small scripts of [§4](#4-code-layout), a few
-  kilobytes in all; responsive images, lazy below the fold, with their sizes set so nothing jumps; two preloaded
-  fonts. **Budgets**, checked in CI on the built `dist/` (a small script, no Lighthouse needed):
+  kilobytes in all; responsive images, lazy below the fold, with their sizes set so nothing jumps;
+  two preloaded fonts. **Budgets**, checked in CI on the built `dist/` (a small script, no Lighthouse needed):
   each page's HTML, CSS and JavaScript together under 100 KB compressed, and the images a page
   loads before any scroll under 400 KB at 1440 px.
 
@@ -917,11 +979,15 @@ play by themselves.
   site's own. The only things a visitor's browser asks of anyone else are the links they click: the
   game, GitHub.
 - **One content-security-policy, and no inline code at all.** The site has no inline `<script>` and
-  no inline `<style>`, no `style=` attribute and no event-handler attribute. Every stylesheet is a
-  file (`build.inlineStylesheets: 'never'`), every script is a file (the language script, which
-  must run before the first paint, is a plain blocking `<script src>` in `<head>`,
-  [§7.3](#73-picking-the-language-by-location)), and nothing is styled from a script except through
-  classes and custom properties set in the stylesheets. So `'self'` covers everything, and **one
+  no inline `<style>`, no `style=` attribute and no event-handler attribute, and no `data:` address.
+  Every stylesheet is a file (`build.inlineStylesheets: 'never'`), and every script is a file (the
+  language script, which must run before the first paint, is a plain blocking `<script src>` in
+  `<head>`, [§7.3](#73-picking-the-language-by-location)). Two settings keep it so, both in
+  `astro.config.mjs`: Astro 7 inlines a processed script that has no imports when it is under
+  `build.assetsInlineLimit`, and Vite turns small `url()` assets into `data:` URIs, which
+  `img-src 'self'` and `font-src 'self'` would block; **`vite: { build: { assetsInlineLimit: 0 } }`**
+  stops both. Nothing is styled from a script except through classes and custom properties set in
+  the stylesheets. So `'self'` covers everything, and **one
   policy, written once, serves both as Caddy's header and as the `<meta http-equiv>` on GitHub
   Pages.** Astro's own hashed policy is not used: a header with `script-src 'self'` would block the
   inline code that Astro's hashed `<meta>` allows, since the browser applies both. A JSON-LD block is
@@ -941,8 +1007,8 @@ play by themselves.
   `frame-ancestors`, which a `<meta>` ignores, and the referrer policy as `<meta name="referrer"
   content="no-referrer">`. On Pages, until the VPS, the site can be framed by others, which the
   plan accepts for a site with no logins or forms. Checked twice: a test over `dist/` fails on any
-  inline script (JSON-LD aside), `<style>`, `style=` or `on…=` attribute, and a browser test fails on
-  any CSP violation on any page, against the image too.
+  inline script (JSON-LD aside), `<style>`, `style=` or `on…=` attribute and any `data:` address,
+  and a browser test fails on any CSP violation on any page, against the image too.
 - **What the language choice reads** ([§7.3](#73-picking-the-language-by-location)): the browser's
   time zone, read in the browser and sent nowhere; the visitor's own pick and a visit marker, in
   `localStorage` and `sessionStorage`, which are not cookies and are never sent to a server. On the
@@ -973,10 +1039,12 @@ play by themselves.
   starts on Windows too;
 - **the language choice** ([§7.3](#73-picking-the-language-by-location)): `chooseLanguage()` as a
   table of cases: the time zones `Europe/Bucharest` and `Europe/Chisinau` (home), `Europe/London`,
-  `America/New_York`, an unknown one (abroad) and none (stays); a stored pick of each language
-  winning over each location; crawlers (Googlebot, bingbot, a link-preview fetcher) against ordinary
-  Chrome, Safari, Firefox and `HeadlessChrome`; the `sessionStorage` marker (first page, not first,
-  storage unusable); a page with no twin;
+  `America/New_York` and an unknown one (abroad), `UTC`, `Etc/UTC`, `Etc/GMT-3` and none (can't
+  tell: stays); a stored pick of each language winning over each location; crawlers (Googlebot,
+  bingbot, a link-preview fetcher, a user agent with `bot` as a word) against ordinary Chrome,
+  Safari, Firefox, `HeadlessChrome` and **a Cubot phone's WebView user agent**, which must not be
+  taken for a crawler; the `sessionStorage` marker (first page, not first, storage unusable); a page
+  with no twin;
 - **formatting:** dates (with `timeZone: 'UTC'`, so a release at 23:30 UTC is that day in every
   zone the test runs in) and sizes in both locales;
 - **`localizedPath`:** both languages, with and without a base path and a `#section`; Romanian adds
@@ -993,8 +1061,12 @@ play by themselves.
   `America/New_York`, landing on `/` goes to `/en/` and `/en/` stays; `Europe/Chisinau` as Bucharest.
   The second page of a visit is never moved, a stored pick wins over the time zone, a crawler's user
   agent is not moved, a 404 page is not moved, the query and `#section` are kept, and the back button
-  leaves the site instead of returning to the page that moved. Every other test starts with the pick
-  for the page's language already stored (an init script), so the language script never moves it;
+  leaves the site instead of returning to the page that moved; a `UTC` time zone is not moved. Every
+  other test starts with the pick for the page's language already stored (an init script), so the
+  language script never moves it;
+- **the English 404 on Pages:** against a small static server that, like Pages, answers every
+  missing path with the root `404.html`, a missing `/en/…` path ends on the English 404 page, and a
+  missing path outside `/en/` stays on the Romanian one;
 - the header: the current page is marked; the language menu opens with the mouse and the keyboard
   and goes to the same page in the other language, `#section` kept; the phone menu at 390 px;
 - Downloads: each OS switch changes its card's button, file and start line, and the link is the
@@ -1007,17 +1079,23 @@ play by themselves.
 - **contrast on the felt:** axe lists text over a background image as "incomplete", not as a
   violation, so the tests treat every incomplete colour-contrast result as a failure. Where axe
   can't compute a ground, the test makes the text transparent (a style the test adds with the
-  context's `bypassCSP`), takes the rendered pixels of the element's box, and checks the text's
-  colour against the lightest of them: 4.5:1, or 3:1 for large text;
-- **no inline code:** no inline script (JSON-LD aside), `<style>`, `style=` or `on…=` attribute in any
-  built page ([§12](#12-security-and-privacy));
+  context's `bypassCSP`), takes the rendered pixels of the element's box, and computes the text's
+  contrast against each sampled pixel; the **minimum** over the pixels must be 4.5:1, or 3:1 for
+  large text. Taking the minimum, not the lightest pixel, works for light text on a dark ground and
+  for dark text on a light one, such as `--button-ink` on the gold button. **Gold headings**, every
+  `h1` and the others with `background-clip: text` and `color: transparent`, have a check of their
+  own, since the text has no single colour: each of the gradient's stops, taken as the glyph colour,
+  against the felt sampled around the heading's box, at 3:1 (they are large text);
+- **no inline code:** no inline script (JSON-LD aside), `<style>`, `style=` or `on…=` attribute and
+  no `data:` address in any built page or stylesheet, which is also what confirms that
+  `vite.build.assetsInlineLimit: 0` does its work ([§12](#12-security-and-privacy));
 - **no sideways scroll** at 360 px, on any page.
 
 ### 13.3 After the build
 
 - `tools/check_links.mjs` walks `dist/`: every internal link and `#anchor` resolves, every page has
   its other-language twin (the 404 pages excepted), every picture exists, and no page has inline
-  code ([§12](#12-security-and-privacy)).
+  code or a `data:` address ([§12](#12-security-and-privacy)).
 - the size budgets of [§11](#11-search-engines-sharing-and-speed).
 
 ### 13.4 The image
@@ -1070,6 +1148,22 @@ starts each page with the pick for its language stored, so the language script d
 On the owner's machine, under `nice` and with few workers, as `CLAUDE.md` says. The build's two
 settings are in the script itself, so no one has to remember them.
 
+**Every build needs a `SITE_URL`.** Without `site`, `@astrojs/sitemap` skips itself and there are no
+absolute canonical or `hreflang` URLs, so the language script finds no twin
+([§7.3](#73-picking-the-language-by-location)). Each build gets its own:
+
+| Build | `SITE_URL` | `BASE_PATH` | Set by |
+|---|---|---|---|
+| `npm run dev`, `build`, `preview`, `e2e` and `shots`, on a machine and in CI's `build` job | `http://localhost:4321` | `/` | the npm scripts, unless the variable is already set |
+| `deploy.yml`, for GitHub Pages | `https://conectionist.github.io` | `/romanian_whist_site/` | the workflow |
+| The image built from compose, and CI's `docker` job | `http://127.0.0.1:8000` | `/` | the compose file's build argument |
+| The published image (phase 8) | the VPS address, the repository variable `SITE_URL` | `/` | the `publish` job |
+| The image with no argument | none | | the Dockerfile fails |
+
+**Where the check lives:** `astro.config.mjs` throws when `SITE_URL` is unset, so a bare `astro
+build` fails, and the Dockerfile tests its build argument (`test -n "$SITE_URL"`) before it runs
+`npm run build`, because the npm scripts' local default would otherwise quietly fill an empty one.
+
 ### 14.2 Versions, tags and the changelog
 
 As the server and the browser client do:
@@ -1079,13 +1173,16 @@ As the server and the browser client do:
 - **Each release is a tag on `master`,** `v1.0.0` and so on, and the tag must be the version in
   `package.json`: CI checks it, as the browser client's does.
 - **The image has no address of its own** until the VPS is chosen: its `SITE_URL` build argument
-  has no default, and the canonical links, `hreflang`, the sitemap and the sharing tags are built
-  from it. So **publishing the image waits for phase 8**, when the VPS address is set as a
-  repository variable (`SITE_URL`); the `publish` job runs only when that variable is set
+  has no default and the Dockerfile fails without it ([§14.1](#141-scripts)), and the canonical
+  links, `hreflang`, the sitemap and the sharing tags are built from it. So **publishing the image
+  waits for phase 8**, when the VPS address is set as a repository variable (`SITE_URL`); the
+  `publish` job runs only when that variable is set
   ([§14.6](#146-ci-and-automation)). From then on, a tag publishes the image to
   `ghcr.io/conectionist/romanian_whist_site`, as `1.0.0` and `1.0` (the version and `major.minor`);
   each push to `master` publishes `latest`; every build is also `sha-<commit>`. The VPS pins a
-  version. Phase 7's tag, `v1.0.0`, deploys GitHub Pages and publishes no image.
+  version. **The merge into `master` deploys GitHub Pages** (`deploy.yml` runs on pushes to
+  `master`, and the `github-pages` environment would refuse a tag); phase 7's tag, `v1.0.0`, only
+  marks the release, and publishes no image.
 - **`CHANGELOG.md`** starts at `1.0.0`, in the clients' style: a section per version, with
   "Added", "Changed" and "Fixed".
 - The footer shows the version, with the build's short commit in its `title` (M11).
@@ -1101,9 +1198,10 @@ As the server and the browser client do:
    a machine someone is using. The build reads the release data from GitHub
    ([§8](#8-release-data)), with the token passed as a BuildKit secret (`--secret
    id=github_token`), never a build argument or a layer; without it, or with no network, it uses
-   the fallback and says so. **`SITE_URL` is a build argument with no default**: the build stops
-   without it, since the image has no address of its own ([§14.2](#142-versions-tags-and-the-changelog)).
-   `BASE_PATH` is one too, `/` by default. The commit is a build argument too, as the browser
+   the fallback and says so. **`SITE_URL` is a build argument with no default**: the Dockerfile
+   fails without it, since the image has no address of its own
+   ([§14.1](#141-scripts), [§14.2](#142-versions-tags-and-the-changelog)). `BASE_PATH` is one too,
+   `/` by default. The commit is a build argument too, as the browser
    client's `WHIST_WEB_COMMIT` is, since the build context has no git history.
 2. **Serve:** `caddy:2.11.9-alpine`, with `deploy/Caddyfile` and `dist/` in `/srv`, the licence in
    `/usr/share/licenses/`, OCI labels (title, source, licence `AGPL-3.0-or-later`), and
@@ -1191,14 +1289,18 @@ to `master` and the feature branch, on version tags (`v*.*.*`), and by hand; `pa
   and the `docker` job builds the image with a local address, to test it.
 
 **`.github/workflows/deploy.yml`** (GitHub Pages, until the VPS): on pushes to `master`, by hand
-(`workflow_dispatch`) and once a day (`schedule`), builds with the release data and the Pages base
-path and deploys (`actions/upload-pages-artifact`, `actions/deploy-pages`, with `pages: write` and
-`id-token: write`). The scheduled run says in its summary which releases it found. On the VPS, the
+(`workflow_dispatch`) and once a day (`schedule`), not on tags, builds with the release data, the
+Pages address (`SITE_URL=https://conectionist.github.io`) and the Pages base path
+(`BASE_PATH=/romanian_whist_site/`) and deploys (`actions/upload-pages-artifact`,
+`actions/deploy-pages`, with `pages: write` and `id-token: write`). The scheduled run says in its
+summary which releases it found. On the VPS, the
 daily refresh becomes a scheduled rebuild of the image, decided in phase 8.
 
-**`.github/dependabot.yml`**: npm, GitHub Actions and Docker (the two base images), monthly, each
-grouped into one pull request, as the terminal client does for its actions. It ignores TypeScript 7
-while the exception of [§3.1](#31-always-the-latest-versions) stands.
+**`.github/dependabot.yml`**: npm, GitHub Actions, Docker (the two base images in the `Dockerfile`)
+and docker-compose, monthly, each grouped into one pull request, as the terminal client does for its
+actions. Dependabot's `docker` ecosystem reads Dockerfiles only, so the `docker-compose` one is what
+keeps `compose.yaml`'s dev image (`node:26.13.1-trixie-slim`) from drifting from the Dockerfile's.
+It ignores TypeScript 7 while the exception of [§3.1](#31-always-the-latest-versions) stands.
 
 **Dependabot reads its configuration only from the default branch, `master`.** So the file goes to
 `master` by a small pull request of its own, at the start of phase 1, with `target-branch: site/v1`,
@@ -1284,19 +1386,24 @@ Its outcome is written here after the review and the merge, as for every phase
 
 - **Work:**
   - **first, a small pull request of its own, against `master`:** `.github/dependabot.yml`, with
-    `target-branch: site/v1` and TypeScript 7 ignored ([§14.6](#146-ci-and-automation)), because
-    Dependabot reads its configuration only from `master`;
+    `target-branch: site/v1`, TypeScript 7 ignored and the docker-compose ecosystem
+    ([§14.6](#146-ci-and-automation)), because Dependabot reads its configuration only from
+    `master`;
   - the versions checked and updated ([§3.1](#31-always-the-latest-versions));
   - the Astro project: `package.json` (version `0.1.0`) with exact versions and the scripts of
-    [§14.1](#141-scripts) (the build capped with `UV_THREADPOOL_SIZE=2` and `VIPS_CONCURRENCY=1`),
-    `tsconfig.json`, `astro.config.mjs` (site, base, i18n with Romanian the unprefixed default,
-    sitemap, `inlineStylesheets: 'never'`);
+    [§14.1](#141-scripts) (the build capped with `UV_THREADPOOL_SIZE=2` and `VIPS_CONCURRENCY=1`,
+    and a `SITE_URL` for every build), `tsconfig.json`, `astro.config.mjs` (site, base, i18n with
+    Romanian the unprefixed default,
+    sitemap, `inlineStylesheets: 'never'`, `vite.build.assetsInlineLimit: 0`), with the `dist/`
+    check confirming that nothing is inlined;
   - Docker: the `Dockerfile`, `deploy/Caddyfile`, `compose.yaml` with `site` and `dev`,
     `deploy/docker-compose.yml` and `.env.example`, `.dockerignore` ([§14.3](#143-docker));
   - `.github/`: CI with its three jobs, the `publish` job waiting for the `SITE_URL` variable,
     `deploy.yml` turned off until phase 7;
   - `tokens.css` and `global.css` ([§5](#5-the-look-tokens-and-parts)), the fonts, the felt, with
-    the lightest rendered felt measured and each text token checked on it;
+    the pixels behind each text token measured on the real page; a lighter value **proposed to the
+    owner** for any token that fails, the gold headings' foot stop first
+    ([§5.1](#51-colours)), each accepted one written as an M-row;
   - `Base.astro`, the header (logo, links, current page, the language menu, the Menu button and its
     list), the footer, the skip link, `Icon`, `Ornament`, `Button`, `Panel`;
   - the i18n machinery and both dictionaries with the header's, footer's and metadata's text;
@@ -1306,8 +1413,9 @@ Its outcome is written here after the review and the merge, as for every phase
     empty body, and the two 404 pages;
   - `import_assets.py` and the imported assets; the favicon set;
   - the tests: Vitest with the dictionary, `localizedPath`, OS-detection and language-choice tests;
-    Playwright with the header's tests, the time-zone landing tests, axe (incomplete results counted)
-    and the no-inline-code check; the look project and `pair_shots.py`; `check_links.mjs`; the
+    Playwright with the header's tests, the time-zone landing tests, the English 404 test, axe
+    (incomplete results counted, the pixel check and the gold-heading check) and the
+    no-inline-code check; the look project and `pair_shots.py`; `check_links.mjs`; the
     smoke script;
   - the README's "Building and running" section, with and without Docker.
 - **Done when:**
@@ -1315,7 +1423,9 @@ Its outcome is written here after the review and the merge, as for every phase
   - every route answers in both languages, from `npm run dev`, from the dev container and from the
     image, and the language menu goes between them, with and without JavaScript;
   - a visitor with the time zone `America/New_York` who lands on `/` ends on `/en/`, and one with
-    `Europe/Bucharest` stays; a stored pick wins; the page has no inline script or style;
+    `Europe/Bucharest` stays; a stored pick wins; the page has no inline script, style or `data:`
+    address;
+  - the owner has the measured contrast of the gold headings and the proposed foot stop;
   - the comparisons of the header and footer (the top and foot of each page) are linked, wide and
     on a phone, with the language menu and the phone menu open;
   - the owner approves.
@@ -1356,7 +1466,7 @@ Its outcome is written here after the review and the merge, as for every phase
 
 ### Phase 5: About — S
 
-- **Work:** [§6.5](#65-about): the game, the rules and scoring, the opponents, the five
+- **Work:** [§6.5](#65-about): the game, the rules and scoring, the computer players, the five
   repositories, the credits (the Android robot's included); the facts checked against their sources
   and the check written in the outcome; the phone layout; tests.
 - **Ask the owner** whether the Android robot's credit, Google's English wording, is translated on
@@ -1381,12 +1491,15 @@ Its outcome is written here after the review and the merge, as for every phase
   - **an owner step first:** in the repository's Settings, Pages, set Source to "GitHub Actions".
     Pages is off today, and the first deploy fails without it;
   - `deploy.yml` turned on; `CHANGELOG.md` with `1.0.0`; `package.json` at `1.0.0`;
-  - the feature branch's pull request into `master`; once the owner has approved and it is merged,
-    the tag `v1.0.0`, which deploys GitHub Pages. It publishes **no image**: the image has no
-    address until phase 8 ([§14.2](#142-versions-tags-and-the-changelog));
+  - the feature branch's pull request into `master`; once the owner has approved, **its merge
+    deploys GitHub Pages** (`deploy.yml` runs on pushes to `master`); then the tag `v1.0.0`, which
+    marks the release. It publishes **no image**: the image has no address until phase 8
+    ([§14.2](#142-versions-tags-and-the-changelog));
   - the site live on GitHub Pages; a smoke test against it (every page answers, the downloads
     resolve); the sitemap submitted by hand in Google Search Console and Bing Webmaster Tools
-    ([§11](#11-search-engines-sharing-and-speed));
+    ([§11](#11-search-engines-sharing-and-speed)). Both need a verified property, and for a
+    `github.io` sub-path that means a verification `<meta>` tag in Home's `<head>` or a file in
+    `public/`, deployed with the site, which the owner generates in each tool first;
   - then, the owner deciding each, small pull requests in the other repositories that link to the
     site: the READMEs, and the browser client's About.
 - **Done when:** the site is live at `conectionist.github.io/romanian_whist_site`, the scheduled
@@ -1437,7 +1550,8 @@ Its outcome is written here after the review and the merge, as for every phase
 | GitHub's API is down, rate-limited or answers differently at build time | The workflow's token; the committed fallback; a master build fails loudly while the scheduled one keeps the site up; unit tests on recorded answers ([§8](#8-release-data)) |
 | The image's build has no network, or no token | The fallback, and the build says so; the token is a BuildKit secret, so it is never in a layer |
 | A client renames its release files | The mapping test, and the build's check that every system has its file, fail and say which |
-| The CSP and Astro's inline scripts and styles | There is none: stylesheets and scripts are files, so one `'self'` policy serves as header and `<meta>`; a check over `dist/` fails on any inline code, and a browser test fails on any violation, against the image too ([§12](#12-security-and-privacy)) |
+| The CSP and Astro's inline scripts and styles | There is none: stylesheets and scripts are files (`inlineStylesheets: 'never'` and `assetsInlineLimit: 0`), so one `'self'` policy serves as header and `<meta>`; a check over `dist/` fails on any inline code or `data:` address, and a browser test fails on any violation, against the image too ([§12](#12-security-and-privacy)) |
+| The gold page titles fail 3:1 on the lighter felt, in the mock-up too | Measured in phase 1; a lighter foot stop for the gradient is proposed to the owner, and is an M-row once accepted; the check of §13.2 reports them until then ([§5.1](#51-colours)) |
 | GitHub turns off a scheduled workflow after 60 days with no activity in the repository, so new releases would stop reaching the site | The deploy workflow's summary names the releases it found; the release trigger of §8 removes the need; until then, a push or a manual run re-enables it, and phase 7's outcome says so |
 | GitHub Pages' limits: no headers, a base path, a `robots.txt` that crawlers ignore | The `<meta>` CSP; `localizedPath` for every link, so the base path is one setting; the sitemap submitted by hand ([§11](#11-search-engines-sharing-and-speed)); all go with the VPS |
 | A time zone isn't a location: a traveller, or a Romanian abroad with a foreign time zone, is sent to English | A language picked in the menu always wins and is kept; the redirect happens only on the first page of a visit and never traps the back button; the IP address replaces the time zone on the VPS ([§7.3](#73-picking-the-language-by-location)) |
@@ -1448,7 +1562,7 @@ Its outcome is written here after the review and the merge, as for every phase
 | The pages are heavy: 18 screenshots and two clips | The image pipeline's sizes, lazy loading, videos instead of GIFs, and the budgets in CI |
 | The Romanian drifts from the games' own words | The glossary of [§7.2](#72-the-romanian-words); the owner reads every page in Romanian in its phase |
 | The phone layouts lose something the wide ones have | The mock-up's phone pictures are compared in every page phase, as the wide ones are |
-| The site's facts drift from the clients (a new opponent, a new platform) | Each fact's source is named in phase 5's outcome; the release data is automatic |
+| The site's facts drift from the clients (a new computer player, a new platform) | Each fact's source is named in phase 5's outcome; the release data is automatic |
 | A reviewer sees the implementer's account and is biased by it | The reviewer is a fresh agent with only the requirements; the outcome is written after the review ([§15.2](#152-how-each-phase-runs)) |
 
 ---
@@ -1459,7 +1573,7 @@ The plan assumes each default until the owner decides otherwise.
 
 | # | Question | Default |
 |---|---|---|
-| D1 | What is the site built with? | **Decided by the owner, 2026-11-26:** Astro, TypeScript and plain CSS, static, no UI framework, no backend |
+| D1 | What is the site built with? | **Decided by the owner, 2026-11-26:** Astro, TypeScript and plain CSS, static, no UI framework, no backend of its own (on the VPS, Caddy itself answers `/country`: [§7.3](#73-picking-the-language-by-location), [§12](#12-security-and-privacy)) |
 | D2 | Its address? | **Decided by the owner, 2026-11-26:** `conectionist.github.io/romanian_whist_site` for now. The game keeps `whist.akdscloud.eu` |
 | D3 | Where is it hosted? | **Decided by the owner, 2026-11-26:** eventually the owner's VPS, behind Caddy, from the Docker image with Docker Compose (phase 8, not now); GitHub Pages until then |
 | D4 | Which language is at the root, and what are the addresses? | **Decided by the owner, 2026-11-26:** Romanian at the root (`/downloads/`), English under `/en/` (`/en/downloads/`); the slugs are English words in both. Translated slugs (`/descarcari/`) are possible later |

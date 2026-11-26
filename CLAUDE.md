@@ -46,9 +46,10 @@ pictures side by side and ask.
 - Romanian is the default language: its pages are at the root, English is under `/en/`.
 - The game is called Romanian Whist in English and Whist in Romanian.
 - Romanian is written with the comma below: ș and ț, never ş and ţ.
-- The Romanian words for the game are the desktop client's (the plan's section 7.2): mână for a
-  trick, licitație, atu, culoarea de jos, Fruntea, Neveul, Socotitor, adversari AI. Don't invent new
-  ones; ask.
+- The Romanian words for the game are the clients' own translations (the plan's section 7.2): the
+  desktop client's for mână (a trick), licitație, atu, culoarea de jos, Fruntea, Neveul, Socotitor,
+  and the browser client's for robot, roboți (a computer player). In English it is "computer
+  player", not "bot". Don't invent new ones; ask.
 - Every link to a page of the site goes through `localizedPath()`, never a hand-written `href`.
 
 ## Versions
