@@ -1,10 +1,10 @@
 # Romanian Whist website: implementation plan
 
-> **Status: plan, 2026-11-26. Nothing is built yet.** Phase 0, the mock-up and this plan, is in
-> review: it is the pull request that adds this file, against `master`. Once the review is done and
-> it is merged, the feature branch is made from `master` and phase 1 starts on a branch of its own
-> ([§15](#15-phases)). The owner has settled the decisions marked "decided" in
-> [§17](#17-decisions-with-defaults); the plan assumes the defaults of the others.
+> **Status: plan, 2026-11-26. Nothing is built yet.** Phase 0, the mock-up and this plan, is
+> complete (2026-11-26, PR #1, merged into `master`). The feature branch, `site/v1`, is made from
+> `master`, and phase 1 starts on a branch of its own off it ([§15](#15-phases)). The owner has
+> settled the decisions marked "decided" in [§17](#17-decisions-with-defaults); the plan assumes the
+> defaults of the others.
 
 This plan is for whoever builds the website: the owner, or an agent picking the work up cold. It
 says what to build, where each part of it comes from, in what order, and how to tell each phase is
@@ -1371,7 +1371,7 @@ Set by the owner on 2026-11-26. `CLAUDE.md` holds the same steps, for the agent 
 10. **The merge.** The main agent asks the owner first, then merges the phase's pull request into
    the feature branch.
 
-### Phase 0: the mock-up and the plan — S (in review)
+### Phase 0: the mock-up and the plan — S ✅ COMPLETE
 
 - **Work:** the mock-up on a design canvas, approved by the owner; its export into
   `docs/site-mockup/` (static pages in both languages, full-page pictures wide and on a phone, the
@@ -1379,8 +1379,38 @@ Set by the owner on 2026-11-26. `CLAUDE.md` holds the same steps, for the agent 
   `.gitignore`.
 - **Done when:** the owner has the plan, and its pull request is merged into `master`.
 
-Its outcome is written here after the review and the merge, as for every phase
-([§15.2](#152-how-each-phase-runs)).
+**Outcome** (branch `claude/happy-wozniak-2x27tk`, PR #1, merged into `master` with a merge commit):
+
+- **The owner's choices on the canvas:** Downloads grouped by client rather than by operating
+  system; the card fan from 10 to Ace; `https://whist.akdscloud.eu` for Play Online; phone layouts
+  for every page.
+- **The owner's decisions on the plan:**
+  - Astro, TypeScript and plain CSS, static, with no backend of its own;
+  - the latest versions of everything;
+  - Docker with Docker Compose, GitHub Pages until the VPS;
+  - stacked branches with tags;
+  - the way each phase runs ([§15.2](#152-how-each-phase-runs));
+  - Romanian as the default language, picked by the visitor's location;
+  - "Whist" as the Romanian name;
+  - macOS labelled experimental, with its real requirements;
+  - Android shown only as coming;
+  - the browser client's words for computer players.
+- **Two cold reviews,** each by a fresh opus agent at extra-high effort:
+  - the first, of the whole PR, found 27 problems, none above severity 4. 22 were fixed as
+    recommended; the owner decided the other 5 (the macOS text, Android, the Romanian word for
+    computer players, the language redirect, and the issues in the client repositories);
+  - the second, of the fix commits, found 24, none above severity 3. All were fixed, one (the
+    words for computer players) as the owner decided.
+
+  The owner chose no third review.
+- **Fixes** were made by a sonnet implementer at extra-high effort for the plan, `CLAUDE.md` and
+  the README, and by the main agent for the mock-up and its export.
+- **Outside this repository:** the first review found that both clients' macOS builds need Apple
+  Silicon and macOS 26, and the terminal's Linux build Ubuntu 24.04. Issues
+  `conectionist/romanian_whist_desktop#64` and `conectionist/romanian_whist_terminal#55` were
+  opened for them.
+- **Where the work departed from the workflow:** this outcome's first draft was written before the
+  first review, which the first review caught; it was taken out and written again here, after both.
 
 ### Phase 1: the base — M
 
